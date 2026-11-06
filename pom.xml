@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.fiwpr06</groupId>
-    <artifactId>WebSocket</artifactId>
+    <artifactId>HTTPApplication</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>WebSocket</name>
+    <name>HTTPApplication</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,7 +96,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.fiwpr06.websocket/com.fiwpr06.websocket.client.BrowserLauncher</mainClass>
+                            <mainClass>com.fiwpr06.httpapplication/com.fiwpr06.httpapplication.client.BrowserLauncher</mainClass>
                             <launcher>app</launcher>
                         </configuration>
                     </execution>

@@ -15,7 +15,7 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8080 ^| findstr LISTENING') 
 )
 
 echo Dang bien dich va khoi chay Server Dashboard...
-call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.websocket/com.fiwpr06.websocket.server.ServerLauncher"
+call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.httpapplication/com.fiwpr06.httpapplication.server.ServerLauncher"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.

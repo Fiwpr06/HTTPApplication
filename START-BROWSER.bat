@@ -9,7 +9,7 @@ echo ========================================================
 echo.
 
 echo Dang bien dich va khoi chay Trinh duyet Web...
-call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.websocket/com.fiwpr06.websocket.client.BrowserLauncher"
+call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.httpapplication/com.fiwpr06.httpapplication.client.BrowserLauncher"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.

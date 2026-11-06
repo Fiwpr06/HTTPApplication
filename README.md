@@ -74,7 +74,7 @@ Dự án **WebServerPro & WebBrowserPro** là giải pháp phần mềm mạng t
 ## 🏗️ 3. Cấu Trúc Cây Thư Mục Dự Án (Default-Tree)
 
 ```text
-WebSocket/
+HTTPApplication/
 ├── pom.xml                                   # Cấu hình Maven (Java 21, JavaFX 21.0.6, JavaFX-Web, MySQL, SQLite, JUnit 5)
 ├── START-SERVER.bat / .vbs                   # 1-Click khởi chạy HTTP Web Server Dashboard
 ├── START-BROWSER.bat / .vbs                  # 1-Click khởi chạy Trình duyệt Web Browser
@@ -116,7 +116,7 @@ WebSocket/
     │           ├── client/browser-main.fxml, history-modal.fxml, download-modal.fxml, inspector-modal.fxml, post-tester-modal.fxml
     │           └── css/server-style.css, browser-style.css
     └── test/
-        └── java/com/fiwpr06/websocket/
+        └── java/com/fiwpr06/httpapplication/
             ├── HttpRequestParserTest.java    # Kiểm thử phân tích HTTP Request, Query & Headers
             ├── MimeTypeTest.java             # Kiểm thử nhận diện các định dạng MIME
             ├── RangeRequestTest.java         # Kiểm thử xử lý Range Requests 206
@@ -170,17 +170,17 @@ Khi trình bày bài thi trước Giảng viên, bạn thực hiện theo 7 bư�
 
 Dự án tích hợp đầy đủ 9 bài kiểm thử đơn vị với **JUnit 5**:
 ```powershell
-cmd /c "cd /d d:\Workspace\Practice\Java\WebSocket && mvnw.cmd test"
+cmd /c "cd /d d:\Workspace\Practice\Java\HTTPApplication && mvnw.cmd test"
 ```
 Kết quả kiểm thử thực tế:
 ```text
-[INFO] Running com.fiwpr06.websocket.DatabaseManagerTest
+[INFO] Running com.fiwpr06.httpapplication.DatabaseManagerTest
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.fiwpr06.websocket.HttpRequestParserTest
+[INFO] Running com.fiwpr06.httpapplication.HttpRequestParserTest
 [INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.fiwpr06.websocket.MimeTypeTest
+[INFO] Running com.fiwpr06.httpapplication.MimeTypeTest
 [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.fiwpr06.websocket.RangeRequestTest
+[INFO] Running com.fiwpr06.httpapplication.RangeRequestTest
 [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 [INFO] 
 [INFO] Results:
