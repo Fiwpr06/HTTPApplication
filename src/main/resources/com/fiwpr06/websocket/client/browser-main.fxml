@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fiwpr06.websocket.client.controller.BrowserController"
+            stylesheets="@../css/browser-style.css" prefWidth="1180" prefHeight="760">
+
+    <top>
+        <VBox spacing="0">
+            <!-- TabPane for Multi-Tab Browsing -->
+            <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" prefHeight="38"/>
+
+            <!-- Omnibox & Navigation Toolbar -->
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="toolbar-container">
+                <Button fx:id="btnBack" text="◀" onAction="#handleBack" styleClass="nav-btn" tooltip="$toolTipBack"/>
+                <Button fx:id="btnForward" text="▶" onAction="#handleForward" styleClass="nav-btn" tooltip="$toolTipFwd"/>
+                <Button fx:id="btnReload" text="🔄" onAction="#handleReload" styleClass="nav-btn" tooltip="$toolTipReload"/>
+                <Button fx:id="btnHome" text="🏠" onAction="#handleHome" styleClass="nav-btn" tooltip="$toolTipHome"/>
+
+                <TextField fx:id="txtUrl" promptText="Nhập URL hoặc địa chỉ web (VD: http://localhost:8080/)..."
+                           onAction="#handleNavigate" HBox.hgrow="ALWAYS" styleClass="omnibox"/>
+
+                <Button fx:id="btnInspect" text="📋 HEAD Inspector" onAction="#handleOpenInspector" styleClass="tool-btn"/>
+                <Button fx:id="btnPostTest" text="🧪 POST Tester" onAction="#handleOpenPostTester" styleClass="tool-btn"/>
+                <Button fx:id="btnDownloads" text="📥 Downloads" onAction="#handleOpenDownloads" styleClass="tool-btn"/>
+                <Button fx:id="btnHistory" text="🕒 Lịch Sử" onAction="#handleOpenHistory" styleClass="tool-btn"/>
+                <Button fx:id="btnNewTab" text="➕" onAction="#handleNewTab" styleClass="tool-btn-primary"/>
+            </HBox>
+
+            <!-- Bookmarks Bar -->
+            <HBox spacing="6" alignment="CENTER_LEFT" styleClass="bookmarks-bar">
+                <Button text="🏠 Trang Chủ" onAction="#handleBookmarkHome" styleClass="bookmark-link"/>
+                <Button text="🎬 Video (.mp4)" onAction="#handleBookmarkVideo" styleClass="bookmark-link"/>
+                <Button text="🎵 Âm Thanh (.mp3)" onAction="#handleBookmarkAudio" styleClass="bookmark-link"/>
+                <Button text="📄 Tài Liệu (.pdf)" onAction="#handleBookmarkPdf" styleClass="bookmark-link"/>
+                <Button text="📦 Tải File (.zip)" onAction="#handleBookmarkZip" styleClass="bookmark-link"/>
+                <Button text="📝 Form POST" onAction="#handleBookmarkForm" styleClass="bookmark-link"/>
+                <Button text="⚡ API Status" onAction="#handleBookmarkApi" styleClass="bookmark-link"/>
+            </HBox>
+
+            <!-- Loading Progress Indicator -->
+            <ProgressBar fx:id="progressBar" prefHeight="3" prefWidth="10000" visible="false" styleClass="progress-bar"/>
+        </VBox>
+    </top>
+
+    <!-- Center Content: TabPane content is managed dynamically in Controller -->
+    <center>
+        <StackPane fx:id="contentContainer"/>
+    </center>
+
+</BorderPane>

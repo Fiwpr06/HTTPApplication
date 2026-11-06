@@ -1,0 +1,145 @@
+/* Chrome / Cốc Cốc Style - Modern Web Browser Styling */
+.root {
+    -fx-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -fx-base: #F8FAFC;
+    -fx-background-color: #F8FAFC;
+}
+
+/* Tab Bar */
+.tab-pane .tab-header-area {
+    -fx-padding: 6 12 0 12;
+    -fx-background-color: #E2E8F0;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #E2E8F0;
+}
+
+.tab {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 6 16;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+.tab:selected {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #0F172A;
+    -fx-font-weight: 600;
+}
+
+.tab .tab-label {
+    -fx-text-fill: inherit;
+}
+
+/* Omnibox & Navigation Toolbar */
+.toolbar-container {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 16;
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+    -fx-padding: 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #475569;
+    -fx-cursor: hand;
+}
+
+.nav-btn:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #0F172A;
+}
+
+.nav-btn:disabled {
+    -fx-opacity: 0.4;
+}
+
+.omnibox {
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: transparent;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-padding: 7 18;
+    -fx-font-size: 13.5px;
+    -fx-text-fill: #0F172A;
+}
+
+.omnibox:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #0284C7;
+    -fx-effect: dropshadow(three-pass-box, rgba(2, 132, 199, 0.2), 6, 0, 0, 1);
+}
+
+/* Action Buttons */
+.tool-btn {
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+}
+
+.tool-btn:hover {
+    -fx-background-color: #E2E8F0;
+    -fx-text-fill: #0284C7;
+}
+
+.tool-btn-primary {
+    -fx-background-color: #0284C7;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.tool-btn-primary:hover {
+    -fx-background-color: #0369A1;
+}
+
+/* Bookmarks Bar */
+.bookmarks-bar {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 4 16;
+}
+
+.bookmark-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 3 8;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.bookmark-link:hover {
+    -fx-background-color: #E2E8F0;
+    -fx-text-fill: #0284C7;
+}
+
+/* Loading Bar */
+.progress-bar {
+    -fx-accent: #0284C7;
+}
+
+.progress-bar .track {
+    -fx-background-color: transparent;
+}

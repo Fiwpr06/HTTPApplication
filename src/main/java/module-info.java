@@ -11,6 +11,8 @@ module com.fiwpr06.websocket {
     opens com.fiwpr06.websocket.common.model to javafx.base;
     opens com.fiwpr06.websocket.server to javafx.fxml, javafx.graphics;
     opens com.fiwpr06.websocket.server.controller to javafx.fxml;
+    opens com.fiwpr06.websocket.client to javafx.fxml, javafx.graphics;
+    opens com.fiwpr06.websocket.client.controller to javafx.fxml;
 
     exports com.fiwpr06.websocket.common.model;
     exports com.fiwpr06.websocket.common.constant;
@@ -20,4 +22,7 @@ module com.fiwpr06.websocket {
     exports com.fiwpr06.websocket.server.handler;
     exports com.fiwpr06.websocket.server;
     exports com.fiwpr06.websocket.server.controller;
+    exports com.fiwpr06.websocket.client;
+    exports com.fiwpr06.websocket.client.controller;
+    exports com.fiwpr06.websocket.client.engine;
 }
