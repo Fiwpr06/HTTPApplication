@@ -13,4 +13,6 @@ module com.fiwpr06.websocket {
     exports com.fiwpr06.websocket.common.constant;
     exports com.fiwpr06.websocket.common.util;
     exports com.fiwpr06.websocket.server.database;
+    exports com.fiwpr06.websocket.server.core;
+    exports com.fiwpr06.websocket.server.handler;
 }
