@@ -59,11 +59,11 @@ public class ServerController implements Initializable, ServerListener {
         totalBytes = logDao.getTotalBytesSent();
         updateSummary();
 
-        appendLog("=== MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM) SẴN SÀNG ===");
-        appendLog("Hệ điều hành: Windows | Java 21 | CSDL: " + dbType);
-        appendLog("3 Dịch vụ: [1] Stream Nhạc MP3  [2] Stream Video MP4  [3] Xem Tài liệu PDF");
-        appendLog("Thư mục web lưu trữ: " + webRoot.getAbsolutePath());
-        appendLog("Địa chỉ mạng LAN (cho điện thoại/máy khác): http://" + localIp + ":8080/");
+        appendLog("=== MAY CHU HTTP MULTI-SERVICE (LAB 4 - LTM) SAN SANG ===");
+        appendLog("He dieu hanh: Windows | Java 21 | CSDL: " + dbType);
+        appendLog("3 Dich vu: [1] Stream Nhac MP3  [2] Stream Video MP4  [3] Xem Tai lieu PDF");
+        appendLog("Thu muc web luu tru: " + webRoot.getAbsolutePath());
+        appendLog("Dia chi mang LAN (cho thiet bi khac): http://" + localIp + ":8080/");
 
         // Auto start server on launch
         Platform.runLater(this::handleStartServer);
@@ -91,8 +91,8 @@ public class ServerController implements Initializable, ServerListener {
             txtPort.setDisable(true);
             btnStartServer.setDisable(true);
             btnStopServer.setDisable(false);
-            appendLog("🚀 [KHỞI ĐỘNG] Máy chủ đang lắng nghe tại cổng " + port);
-            appendLog("📱 [KẾT NỐI MÁY KHÁC] Mở điện thoại hoặc máy tính thứ 2 (cùng Wi-Fi) truy cập: http://" + localIp + ":" + port + "/");
+            appendLog("[KHOI DONG] May chu dang lang nghe tai cong " + port);
+            appendLog("[KET NOI LAN] Mo dien thoai hoac may tinh cung Wi-Fi truy cap: http://" + localIp + ":" + port + "/");
         }
     }
 
@@ -102,7 +102,7 @@ public class ServerController implements Initializable, ServerListener {
         txtPort.setDisable(false);
         btnStartServer.setDisable(false);
         btnStopServer.setDisable(true);
-        appendLog("⏹ [DỪNG] Máy chủ HTTP đã dừng hoạt động.");
+        appendLog("[DUNG] May chu HTTP da dung hoat dong.");
     }
 
     @FXML
@@ -138,7 +138,7 @@ public class ServerController implements Initializable, ServerListener {
     @FXML
     public void handleClearScreen() {
         txtConsoleLog.clear();
-        appendLog("=== Đã làm sạch màn hình nhật ký ===");
+        appendLog("=== Da lam sach man hinh nhat ky ===");
     }
 
     private void appendLog(String message) {
@@ -147,7 +147,7 @@ public class ServerController implements Initializable, ServerListener {
     }
 
     private void updateSummary() {
-        lblSummary.setText(String.format("📊 Tổng yêu cầu đã nhận: %d | Tổng lưu lượng: %s | Địa chỉ IP máy chủ: %s",
+        lblSummary.setText(String.format("Tong yeu cau da nhan: %d | Tong luu luong: %s | Dia chi IP may chu: %s",
                 totalRequests, FileUtils.formatFileSize(totalBytes), localIp));
     }
 
@@ -158,29 +158,29 @@ public class ServerController implements Initializable, ServerListener {
             totalBytes += log.getContentLength();
             updateSummary();
 
-            String actionIcon = "👉 [YÊU CẦU]";
+            String actionTag = "[REQUEST]";
             String uri = log.getUri().toLowerCase();
             if (uri.contains(".mp3") || uri.contains(".wav")) {
-                actionIcon = "🎵 [STREAM NHẠC MP3]";
+                actionTag = "[STREAM NHAC MP3]";
             } else if (uri.contains(".mp4")) {
-                actionIcon = "🎬 [STREAM VIDEO MP4]";
+                actionTag = "[STREAM VIDEO MP4]";
             } else if (uri.contains(".pdf")) {
-                actionIcon = "📄 [XEM TÀI LIỆU PDF]";
+                actionTag = "[XEM TAI LIEU PDF]";
             } else if (uri.contains("/downloads/") || uri.contains(".zip")) {
-                actionIcon = "📥 [TẢI TỆP TIN]";
+                actionTag = "[TAI TEP TIN]";
             } else if (uri.equals("/") || uri.contains(".html")) {
-                actionIcon = "🌐 [TRUY CẬP TRANG CHỦ]";
+                actionTag = "[TRUY CAP TRANG CHU]";
             }
 
             String desc = switch (log.getStatusCode()) {
                 case 200 -> "200 OK";
-                case 206 -> "206 Partial Content (Tua đoạn Range)";
+                case 206 -> "206 Partial Content (Tua doan)";
                 case 404 -> "404 Not Found";
                 default -> log.getStatusCode() + "";
             };
 
             appendLog(String.format("%s [%s] %s %s -> %s | %s",
-                    actionIcon, log.getClientIp(), log.getMethod(), log.getUri(), desc, FileUtils.formatFileSize(log.getContentLength())));
+                    actionTag, log.getClientIp(), log.getMethod(), log.getUri(), desc, FileUtils.formatFileSize(log.getContentLength())));
         });
     }
 
@@ -188,12 +188,12 @@ public class ServerController implements Initializable, ServerListener {
     public void onStatusChanged(boolean running, int port, String ip) {
         Platform.runLater(() -> {
             if (running) {
-                lblStatusBadge.setText("🟢 ĐANG HOẠT ĐỘNG (" + port + ")");
-                lblStatusBadge.setStyle("-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
+                lblStatusBadge.setText("DANG HOAT DONG (" + port + ")");
+                lblStatusBadge.setStyle("-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;");
                 updateUrlCards(String.valueOf(port));
             } else {
-                lblStatusBadge.setText("🔴 MÁY CHỦ ĐANG TẮT");
-                lblStatusBadge.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
+                lblStatusBadge.setText("MAY CHU DANG TAT");
+                lblStatusBadge.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;");
             }
         });
     }
@@ -201,7 +201,7 @@ public class ServerController implements Initializable, ServerListener {
     @Override
     public void onServerError(String message) {
         Platform.runLater(() -> {
-            appendLog("❌ [LỖI]: " + message);
+            appendLog("[LOI]: " + message);
             AlertHelper.showError("Lỗi Máy Chủ", message);
         });
     }

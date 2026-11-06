@@ -14,13 +14,14 @@
     <top>
         <VBox spacing="12" style="-fx-background-color: #1E293B; -fx-padding: 16 20; -fx-border-color: #334155; -fx-border-width: 0 0 1 0;">
             <!-- Header title & badges -->
-            <HBox alignment="CENTER_LEFT" spacing="16">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="HTTP" style="-fx-background-color: #00D2E6; -fx-text-fill: #0F172A; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 4 10; -fx-background-radius: 6;"/>
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Text text="⚡ MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM)" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-fill: #F8FAFC;"/>
+                    <Text text="MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM)" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-fill: #F8FAFC;"/>
                     <Text text="3 Dịch Vụ Mạng Cốt Lõi: Xem PDF (.pdf) • Stream Nhạc (.mp3) • Stream Video (.mp4)" style="-fx-font-size: 13px; -fx-fill: #94A3B8;"/>
                 </VBox>
-                <Label fx:id="lblDbBadge" text="CSDL: SQLITE" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 12;"/>
-                <Label fx:id="lblStatusBadge" text="🔴 MÁY CHỦ ĐANG TẮT" style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;"/>
+                <Label fx:id="lblDbBadge" text="CSDL: SQLITE" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 5 12; -fx-background-radius: 12;"/>
+                <Label fx:id="lblStatusBadge" text="MÁY CHỦ ĐANG TẮT" style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;"/>
             </HBox>
 
             <!-- Network Access Info Cards (Cho máy khác / điện thoại truy cập) -->
@@ -28,23 +29,23 @@
                 <!-- Local Card -->
                 <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
                       style="-fx-background-color: #0F172A; -fx-padding: 10 14; -fx-border-color: #334155; -fx-border-radius: 8; -fx-background-radius: 8;">
-                    <Label text="💻" style="-fx-font-size: 20px;"/>
+                    <Label text="LOCAL" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 8; -fx-background-radius: 4;"/>
                     <VBox spacing="2" HBox.hgrow="ALWAYS">
                         <Label text="Truy cập trên máy này:" style="-fx-text-fill: #94A3B8; -fx-font-size: 11px; -fx-font-weight: bold;"/>
                         <Label fx:id="lblLocalUrl" text="http://localhost:8080/" style="-fx-text-fill: #38BDF8; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Consolas', monospace;"/>
                     </VBox>
-                    <Button text="🌐 Mở Trình Duyệt" onAction="#handleOpenBrowser" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 10; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                    <Button text="Mở Trình Duyệt" onAction="#handleOpenBrowser" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
                 </HBox>
 
                 <!-- LAN Card (Quan trọng cho điện thoại / máy bạn) -->
                 <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
                       style="-fx-background-color: #0F172A; -fx-padding: 10 14; -fx-border-color: #059669; -fx-border-radius: 8; -fx-background-radius: 8;">
-                    <Label text="📱" style="-fx-font-size: 20px;"/>
+                    <Label text="LAN" style="-fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 8; -fx-background-radius: 4;"/>
                     <VBox spacing="2" HBox.hgrow="ALWAYS">
                         <Label text="Điện thoại / Máy khác (cùng Wi-Fi):" style="-fx-text-fill: #34D399; -fx-font-size: 11px; -fx-font-weight: bold;"/>
                         <Label fx:id="lblLanUrl" text="http://192.168.1.1:8080/" style="-fx-text-fill: #10B981; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Consolas', monospace;"/>
                     </VBox>
-                    <Button text="📋 Sao Chép" onAction="#handleCopyLanUrl" style="-fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 10; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                    <Button text="Sao Chép URL" onAction="#handleCopyLanUrl" style="-fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
                 </HBox>
             </HBox>
 
@@ -53,13 +54,13 @@
                 <Label text="Cổng Port:" style="-fx-text-fill: #E2E8F0; -fx-font-weight: bold;"/>
                 <TextField fx:id="txtPort" text="8080" prefWidth="75" style="-fx-font-size: 13px; -fx-padding: 6 8;"/>
 
-                <Button fx:id="btnStartServer" text="▶ Bật Máy Chủ" onAction="#handleStartServer" style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;"/>
-                <Button fx:id="btnStopServer" text="⏹ Tắt Máy Chủ" onAction="#handleStopServer" style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;" disable="true"/>
+                <Button fx:id="btnStartServer" text="Bật Máy Chủ" onAction="#handleStartServer" style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                <Button fx:id="btnStopServer" text="Tắt Máy Chủ" onAction="#handleStopServer" style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;" disable="true"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="📂 Thư Mục Web / Media" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
-                <Button text="🗑️ Xóa Log" onAction="#handleClearScreen" style="-fx-background-color: #475569; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                <Button text="Mở Thư Mục Web" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                <Button text="Xóa Nhật Ký" onAction="#handleClearScreen" style="-fx-background-color: #475569; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
             </HBox>
         </VBox>
     </top>
@@ -68,9 +69,9 @@
     <center>
         <VBox spacing="8" style="-fx-padding: 14 20;">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="📜 Nhật Ký Kết Nối &amp; Phục Vụ 3 Dịch Vụ (Live Real-time Log):" style="-fx-text-fill: #CBD5E1; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <Label text="Nhật Ký Kết Nối &amp; Phục Vụ 3 Dịch Vụ (Live Real-time Log):" style="-fx-text-fill: #CBD5E1; -fx-font-weight: bold; -fx-font-size: 13px;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Label text="💡 Máy khác gõ đúng link màu xanh bên trên để trải nghiệm 3 dịch vụ" style="-fx-text-fill: #10B981; -fx-font-size: 12px; -fx-font-style: italic;"/>
+                <Label text="[Mẹo] Thiết bị khác gõ link LAN màu xanh bên trên để truy cập" style="-fx-text-fill: #10B981; -fx-font-size: 12px;"/>
             </HBox>
             <TextArea fx:id="txtConsoleLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
                       style="-fx-control-inner-background: #020617; -fx-text-fill: #38BDF8; -fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-border-color: #334155; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8;"/>
@@ -80,7 +81,7 @@
     <!-- Bottom: Summary Stats -->
     <bottom>
         <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #1E293B; -fx-padding: 10 20; -fx-border-color: #334155; -fx-border-width: 1 0 0 0;">
-            <Label fx:id="lblSummary" text="📊 Tổng yêu cầu đã nhận: 0 | Tổng lưu lượng: 0 B | Địa chỉ IP máy chủ: 127.0.0.1" style="-fx-text-fill: #94A3B8; -fx-font-size: 13px; -fx-font-weight: 500;"/>
+            <Label fx:id="lblSummary" text="Tổng yêu cầu đã nhận: 0 | Tổng lưu lượng: 0 B | Địa chỉ IP máy chủ: 127.0.0.1" style="-fx-text-fill: #94A3B8; -fx-font-size: 13px; -fx-font-weight: 500;"/>
         </HBox>
     </bottom>
 
