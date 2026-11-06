@@ -59,10 +59,11 @@ public class ServerController implements Initializable, ServerListener {
         totalBytes = logDao.getTotalBytesSent();
         updateSummary();
 
-        appendLog("=== MÁY CHỦ PHÁT NHẠC & WEB HTTP SẴN SÀNG ===");
-        appendLog("Môi trường: Windows Java 21 | CSDL: " + dbType);
-        appendLog("Thư mục lưu trữ: " + webRoot.getAbsolutePath());
-        appendLog("Địa chỉ LAN cho điện thoại/máy khác: http://" + localIp + ":8080/");
+        appendLog("=== MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM) SẴN SÀNG ===");
+        appendLog("Hệ điều hành: Windows | Java 21 | CSDL: " + dbType);
+        appendLog("3 Dịch vụ: [1] Stream Nhạc MP3  [2] Stream Video MP4  [3] Xem Tài liệu PDF");
+        appendLog("Thư mục web lưu trữ: " + webRoot.getAbsolutePath());
+        appendLog("Địa chỉ mạng LAN (cho điện thoại/máy khác): http://" + localIp + ":8080/");
 
         // Auto start server on launch
         Platform.runLater(this::handleStartServer);
@@ -91,7 +92,7 @@ public class ServerController implements Initializable, ServerListener {
             btnStartServer.setDisable(true);
             btnStopServer.setDisable(false);
             appendLog("🚀 [KHỞI ĐỘNG] Máy chủ đang lắng nghe tại cổng " + port);
-            appendLog("📱 [HƯỚNG DẪN KẾT NỐI] Mở điện thoại / máy khác (cùng Wi-Fi) truy cập: http://" + localIp + ":" + port + "/");
+            appendLog("📱 [KẾT NỐI MÁY KHÁC] Mở điện thoại hoặc máy tính thứ 2 (cùng Wi-Fi) truy cập: http://" + localIp + ":" + port + "/");
         }
     }
 
@@ -109,8 +110,8 @@ public class ServerController implements Initializable, ServerListener {
         ClipboardContent content = new ClipboardContent();
         content.putString(lblLanUrl.getText());
         Clipboard.getSystemClipboard().setContent(content);
-        AlertHelper.showInfo("Đã sao chép", "Đã sao chép liên kết vào Clipboard:\n" + lblLanUrl.getText()
-                + "\n\nHãy gửi link này qua Zalo/Tin nhắn cho bạn bè cùng Wi-Fi để vào nghe nhạc thử!");
+        AlertHelper.showInfo("Đã sao chép", "Đã sao chép liên kết mạng LAN vào Clipboard:\n" + lblLanUrl.getText()
+                + "\n\nHãy gửi link này hoặc gõ trên điện thoại (cùng Wi-Fi) để kiểm thử kết nối!");
     }
 
     @FXML
@@ -157,19 +158,23 @@ public class ServerController implements Initializable, ServerListener {
             totalBytes += log.getContentLength();
             updateSummary();
 
-            String actionIcon = "👉";
-            String uri = log.getUri();
-            if (uri.contains(".mp3") || uri.contains(".mp4")) {
-                actionIcon = "🎵 [STREAM NHẠC]";
+            String actionIcon = "👉 [YÊU CẦU]";
+            String uri = log.getUri().toLowerCase();
+            if (uri.contains(".mp3") || uri.contains(".wav")) {
+                actionIcon = "🎵 [STREAM NHẠC MP3]";
+            } else if (uri.contains(".mp4")) {
+                actionIcon = "🎬 [STREAM VIDEO MP4]";
+            } else if (uri.contains(".pdf")) {
+                actionIcon = "📄 [XEM TÀI LIỆU PDF]";
             } else if (uri.contains("/downloads/") || uri.contains(".zip")) {
-                actionIcon = "📥 [TẢI FILE]";
+                actionIcon = "📥 [TẢI TỆP TIN]";
             } else if (uri.equals("/") || uri.contains(".html")) {
-                actionIcon = "🌐 [XEM WEB]";
+                actionIcon = "🌐 [TRUY CẬP TRANG CHỦ]";
             }
 
             String desc = switch (log.getStatusCode()) {
                 case 200 -> "200 OK";
-                case 206 -> "206 Partial Content (Tua nhạc)";
+                case 206 -> "206 Partial Content (Tua đoạn Range)";
                 case 404 -> "404 Not Found";
                 default -> log.getStatusCode() + "";
             };

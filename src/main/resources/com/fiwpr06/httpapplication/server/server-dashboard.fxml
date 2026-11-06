@@ -7,7 +7,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.fiwpr06.httpapplication.server.controller.ServerController"
-            prefWidth="920" prefHeight="650"
+            prefWidth="930" prefHeight="650"
             style="-fx-background-color: #0F172A; -fx-font-family: 'Segoe UI', sans-serif;">
 
     <!-- Top Header & Connection Guide -->
@@ -16,8 +16,8 @@
             <!-- Header title & badges -->
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Text text="🎵 MÁY CHỦ PHÁT NHẠC & WEB HTTP (MUSIC STREAM SERVER)" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-fill: #F8FAFC;"/>
-                    <Text text="Dịch vụ phát nhạc trực tuyến (HTTP 206 Range Stream) &amp; Tải tệp tin qua mạng LAN" style="-fx-font-size: 13px; -fx-fill: #94A3B8;"/>
+                    <Text text="⚡ MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM)" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-fill: #F8FAFC;"/>
+                    <Text text="3 Dịch Vụ Mạng Cốt Lõi: Xem PDF (.pdf) • Stream Nhạc (.mp3) • Stream Video (.mp4)" style="-fx-font-size: 13px; -fx-fill: #94A3B8;"/>
                 </VBox>
                 <Label fx:id="lblDbBadge" text="CSDL: SQLITE" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 12;"/>
                 <Label fx:id="lblStatusBadge" text="🔴 MÁY CHỦ ĐANG TẮT" style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;"/>
@@ -58,7 +58,7 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="📂 Thư Mục Nhạc / Web" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                <Button text="📂 Thư Mục Web / Media" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
                 <Button text="🗑️ Xóa Log" onAction="#handleClearScreen" style="-fx-background-color: #475569; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
             </HBox>
         </VBox>
@@ -68,9 +68,9 @@
     <center>
         <VBox spacing="8" style="-fx-padding: 14 20;">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="📜 Nhật Ký Kết Nối &amp; Yêu Cầu (Live Real-time Log):" style="-fx-text-fill: #CBD5E1; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <Label text="📜 Nhật Ký Kết Nối &amp; Phục Vụ 3 Dịch Vụ (Live Real-time Log):" style="-fx-text-fill: #CBD5E1; -fx-font-weight: bold; -fx-font-size: 13px;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Label text="💡 Máy khác gõ đúng link màu xanh bên trên để nghe nhạc" style="-fx-text-fill: #10B981; -fx-font-size: 12px; -fx-font-style: italic;"/>
+                <Label text="💡 Máy khác gõ đúng link màu xanh bên trên để trải nghiệm 3 dịch vụ" style="-fx-text-fill: #10B981; -fx-font-size: 12px; -fx-font-style: italic;"/>
             </HBox>
             <TextArea fx:id="txtConsoleLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
                       style="-fx-control-inner-background: #020617; -fx-text-fill: #38BDF8; -fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-border-color: #334155; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8;"/>
