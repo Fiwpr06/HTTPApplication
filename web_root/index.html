@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ WebServer Pro — Trung Tâm Dịch Vụ Mạng Đa Phương Tiện</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <span class="logo-icon">🌐</span>
+                <span class="logo-text">WebServer<span class="highlight">Pro</span></span>
+                <span class="badge">HTTP/1.1</span>
+            </div>
+            <nav class="nav">
+                <a href="#services">Dịch vụ</a>
+                <a href="#media">Đa phương tiện</a>
+                <a href="#upload">Tải lên</a>
+                <a href="#api">HTTP API</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">🚀 BÀI LAB 4: HTTP WEB SERVER & WEB BROWSER</div>
+            <h1>Hệ Thống Web Server Đa Dịch Vụ & Trình Duyệt Web</h1>
+            <p class="subtitle">Phục vụ các giao thức mạng, stream âm thanh/video chuẩn Range Requests 206, xem tài liệu trực tiếp, tải tệp tin và xử lý Form POST.</p>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section">
+            <h2 class="section-title">📂 Danh Mục Dịch Vụ Máy Chủ Phục Vụ</h2>
+            <div class="grid">
+                <!-- Video Streaming -->
+                <div class="card">
+                    <div class="card-icon">🎬</div>
+                    <h3>Stream Video (.mp4)</h3>
+                    <p>Hỗ trợ HTTP Range Requests 206. Cho phép tua thời gian mượt mà không cần tải hết video.</p>
+                    <a href="/media/video.mp4" class="btn btn-primary" target="_blank">Xem Video Trực Tiếp</a>
+                </div>
+
+                <!-- Audio Streaming -->
+                <div class="card">
+                    <div class="card-icon">🎵</div>
+                    <h3>Stream Âm Thanh (.mp3)</h3>
+                    <p>Nghe nhạc trực tuyến chất lượng cao, phản hồi byte-range tức thì.</p>
+                    <a href="/media/audio.mp3" class="btn btn-primary" target="_blank">Nghe Nhạc Trực Tiếp</a>
+                </div>
+
+                <!-- PDF Document -->
+                <div class="card">
+                    <div class="card-icon">📄</div>
+                    <h3>Tài Liệu Văn Bản (.pdf)</h3>
+                    <p>Đọc tài liệu, giáo trình PDF trực tiếp trong trình duyệt bằng WebKit Engine.</p>
+                    <a href="/documents/sample.pdf" class="btn btn-primary" target="_blank">Mở File PDF</a>
+                </div>
+
+                <!-- Download Archive -->
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <h3>Tải Tệp Nén (.zip)</h3>
+                    <p>Tải gói mã nguồn và dữ liệu bài tập thông qua Download Manager có thanh tiến trình.</p>
+                    <a href="/downloads/project.zip" class="btn btn-secondary" download>Tải File ZIP (Download)</a>
+                </div>
+
+                <!-- Image Resource -->
+                <div class="card">
+                    <div class="card-icon">🖼️</div>
+                    <h3>Đồ Họa & Hình Ảnh (.png)</h3>
+                    <p>Hiển thị tài nguyên đồ họa chất lượng cao với MIME Type image/png.</p>
+                    <a href="/images/banner.png" class="btn btn-secondary" target="_blank">Xem Banner Ảnh</a>
+                </div>
+
+                <!-- API Status -->
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>REST API Thông Số (.json)</h3>
+                    <p>Truy vấn trạng thái máy chủ, thời gian hoạt động và cấu hình qua HTTP GET.</p>
+                    <a href="/api/status" class="btn btn-secondary" target="_blank">Truy Vấn API JSON</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Media Players -->
+        <section id="media" class="section">
+            <h2 class="section-title">▶️ Trình Phát Đa Phương Tiện Nhúng</h2>
+            <div class="media-container">
+                <div class="media-box">
+                    <h3>🎬 Video Stream Player (HTTP 206 Range)</h3>
+                    <video controls width="100%" poster="/images/banner.png">
+                        <source src="/media/video.mp4" type="video/mp4">
+                        Trình duyệt của bạn không hỗ trợ thẻ video HTML5.
+                    </video>
+                </div>
+                <div class="media-box">
+                    <h3>🎵 Audio Stream Player</h3>
+                    <audio controls style="width: 100%; margin-top: 20px;">
+                        <source src="/media/audio.mp3" type="audio/mpeg">
+                        Trình duyệt của bạn không hỗ trợ thẻ audio HTML5.
+                    </audio>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form POST & Upload Section -->
+        <section id="upload" class="section">
+            <h2 class="section-title">📤 Kiểm Thử Giao Thức HTTP POST & Tải Lên Tệp</h2>
+            <div class="form-container">
+                <form id="postForm" action="/api/submit" method="POST" class="post-form">
+                    <div class="form-group">
+                        <label for="fullName">Họ và tên sinh viên:</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="VD: Hà Trọng Phi" required value="Hà Trọng Phi">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentId">Mã số sinh viên (MSSV):</label>
+                        <input type="text" id="studentId" name="studentId" placeholder="VD: 24ITB150" required value="24ITB150">
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback">Nội dung phản hồi / Ghi chú (POST Data):</label>
+                        <textarea id="feedback" name="feedback" rows="3" placeholder="Nhập nội dung gửi qua HTTP POST...">Lab 4 HTTP Web Server & Browser hoạt động xuất sắc!</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Gửi Dữ Liệu (HTTP POST Submit)</button>
+                </form>
+                <div id="postResult" class="post-result" style="display: none;"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>© 2026 WebServerPro — Bài Lab 4 môn Lập trình mạng (LTM). Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn (VKU).</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
