@@ -15,11 +15,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.stage.FileChooser;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
@@ -34,6 +37,11 @@ public class ServerController implements Initializable, ServerListener {
     @FXML private Button btnStopServer;
     @FXML private TextArea txtConsoleLog;
     @FXML private Label lblSummary;
+
+    // File selection labels
+    @FXML private Label lblCurrentAudio;
+    @FXML private Label lblCurrentVideo;
+    @FXML private Label lblCurrentPdf;
 
     private final HttpServerEngine serverEngine = new HttpServerEngine();
     private final AccessLogDao logDao = new AccessLogDao();
@@ -112,6 +120,75 @@ public class ServerController implements Initializable, ServerListener {
         Clipboard.getSystemClipboard().setContent(content);
         AlertHelper.showInfo("Đã sao chép", "Đã sao chép liên kết mạng LAN vào Clipboard:\n" + lblLanUrl.getText()
                 + "\n\nHãy gửi link này hoặc gõ trên điện thoại (cùng Wi-Fi) để kiểm thử kết nối!");
+    }
+
+    @FXML
+    public void handleSelectAudio() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Chọn tệp âm thanh MP3 từ máy tính");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Tệp âm thanh (*.mp3, *.wav)", "*.mp3", "*.wav"),
+                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
+        );
+        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
+        if (file != null) {
+            try {
+                File target = new File(webRoot, "media/audio.mp3");
+                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
+                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                lblCurrentAudio.setText(file.getName());
+                appendLog("[CAP NHAT FILE] Da nap thanh cong bai hat: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp bài hát: " + file.getName() + "\nMở trình duyệt và bấm Play để nghe ngay!");
+            } catch (Exception e) {
+                AlertHelper.showError("Lỗi", "Không thể nạp tệp âm thanh: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    public void handleSelectVideo() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Chọn tệp video MP4 từ máy tính");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Tệp video (*.mp4)", "*.mp4"),
+                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
+        );
+        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
+        if (file != null) {
+            try {
+                File target = new File(webRoot, "media/video.mp4");
+                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
+                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                lblCurrentVideo.setText(file.getName());
+                appendLog("[CAP NHAT FILE] Da nap thanh cong video: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp video: " + file.getName() + "\nMở trình duyệt và bấm Play để xem ngay!");
+            } catch (Exception e) {
+                AlertHelper.showError("Lỗi", "Không thể nạp tệp video: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    public void handleSelectPdf() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Chọn tài liệu PDF từ máy tính");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Tài liệu PDF (*.pdf)", "*.pdf"),
+                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
+        );
+        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
+        if (file != null) {
+            try {
+                File target = new File(webRoot, "documents/sample.pdf");
+                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
+                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                lblCurrentPdf.setText(file.getName());
+                appendLog("[CAP NHAT FILE] Da nap thanh cong tai lieu PDF: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp tài liệu PDF: " + file.getName() + "\nMở trình duyệt hoặc F5 để đọc ngay!");
+            } catch (Exception e) {
+                AlertHelper.showError("Lỗi", "Không thể nạp tài liệu PDF: " + e.getMessage());
+            }
+        }
     }
 
     @FXML

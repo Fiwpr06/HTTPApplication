@@ -7,7 +7,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.fiwpr06.httpapplication.server.controller.ServerController"
-            prefWidth="930" prefHeight="650"
+            prefWidth="960" prefHeight="670"
             style="-fx-background-color: #0F172A; -fx-font-family: 'Segoe UI', sans-serif;">
 
     <!-- Top Header & Connection Guide -->
@@ -61,6 +61,28 @@
 
                 <Button text="Mở Thư Mục Web" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
                 <Button text="Xóa Nhật Ký" onAction="#handleClearScreen" style="-fx-background-color: #475569; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+            </HBox>
+
+            <!-- Custom Files Selection Bar (Chọn File Tùy Ý Từ Máy Tính) -->
+            <HBox spacing="10" alignment="CENTER_LEFT"
+                  style="-fx-background-color: #0F172A; -fx-padding: 8 14; -fx-border-color: #334155; -fx-border-radius: 6; -fx-background-radius: 6;">
+                <Label text="Tự chọn file phát:" style="-fx-text-fill: #94A3B8; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+
+                <Button text="[+] Chọn Nhạc MP3" onAction="#handleSelectAudio"
+                        style="-fx-background-color: #1E293B; -fx-text-fill: #38BDF8; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #0284C7; -fx-border-radius: 4;"/>
+                <Label fx:id="lblCurrentAudio" text="audio.mp3" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
+
+                <Separator orientation="VERTICAL" prefHeight="16"/>
+
+                <Button text="[+] Chọn Video MP4" onAction="#handleSelectVideo"
+                        style="-fx-background-color: #1E293B; -fx-text-fill: #34D399; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #059669; -fx-border-radius: 4;"/>
+                <Label fx:id="lblCurrentVideo" text="video.mp4" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
+
+                <Separator orientation="VERTICAL" prefHeight="16"/>
+
+                <Button text="[+] Chọn PDF" onAction="#handleSelectPdf"
+                        style="-fx-background-color: #1E293B; -fx-text-fill: #F59E0B; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #D97706; -fx-border-radius: 4;"/>
+                <Label fx:id="lblCurrentPdf" text="sample.pdf" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
             </HBox>
         </VBox>
     </top>
