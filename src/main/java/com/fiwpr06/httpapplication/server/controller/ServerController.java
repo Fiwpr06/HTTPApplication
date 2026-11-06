@@ -13,6 +13,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -25,6 +27,8 @@ public class ServerController implements Initializable, ServerListener {
 
     @FXML private Label lblDbBadge;
     @FXML private Label lblStatusBadge;
+    @FXML private Label lblLocalUrl;
+    @FXML private Label lblLanUrl;
     @FXML private TextField txtPort;
     @FXML private Button btnStartServer;
     @FXML private Button btnStopServer;
@@ -48,19 +52,25 @@ public class ServerController implements Initializable, ServerListener {
         lblDbBadge.setText("CSDL: " + dbType);
 
         localIp = NetworkUtil.getLocalIpv4Address();
+        updateUrlCards("8080");
 
         // Initial stats
         totalRequests = logDao.getTotalRequests();
         totalBytes = logDao.getTotalBytesSent();
         updateSummary();
 
-        appendLog("=== MÁY CHỦ HTTP WEB SERVER SẴN SÀNG ===");
-        appendLog("Hệ điều hành: Windows | Môi trường: JDK 21 | CSDL: " + dbType);
-        appendLog("Thư mục web phục vụ: " + webRoot.getAbsolutePath());
-        appendLog("Nhấn nút [▶ Bật Máy Chủ] để bắt đầu lắng nghe kết nối.");
+        appendLog("=== MÁY CHỦ PHÁT NHẠC & WEB HTTP SẴN SÀNG ===");
+        appendLog("Môi trường: Windows Java 21 | CSDL: " + dbType);
+        appendLog("Thư mục lưu trữ: " + webRoot.getAbsolutePath());
+        appendLog("Địa chỉ LAN cho điện thoại/máy khác: http://" + localIp + ":8080/");
 
         // Auto start server on launch
         Platform.runLater(this::handleStartServer);
+    }
+
+    private void updateUrlCards(String port) {
+        lblLocalUrl.setText("http://localhost:" + port + "/");
+        lblLanUrl.setText("http://" + localIp + ":" + port + "/");
     }
 
     @FXML
@@ -76,10 +86,12 @@ public class ServerController implements Initializable, ServerListener {
 
         boolean success = serverEngine.start(port, webRoot);
         if (success) {
+            updateUrlCards(String.valueOf(port));
             txtPort.setDisable(true);
             btnStartServer.setDisable(true);
             btnStopServer.setDisable(false);
-            appendLog("🚀 [THÀNH CÔNG] Máy chủ đã khởi động tại cổng " + port + ". Địa chỉ truy cập: http://" + localIp + ":" + port + "/");
+            appendLog("🚀 [KHỞI ĐỘNG] Máy chủ đang lắng nghe tại cổng " + port);
+            appendLog("📱 [HƯỚNG DẪN KẾT NỐI] Mở điện thoại / máy khác (cùng Wi-Fi) truy cập: http://" + localIp + ":" + port + "/");
         }
     }
 
@@ -90,6 +102,15 @@ public class ServerController implements Initializable, ServerListener {
         btnStartServer.setDisable(false);
         btnStopServer.setDisable(true);
         appendLog("⏹ [DỪNG] Máy chủ HTTP đã dừng hoạt động.");
+    }
+
+    @FXML
+    public void handleCopyLanUrl() {
+        ClipboardContent content = new ClipboardContent();
+        content.putString(lblLanUrl.getText());
+        Clipboard.getSystemClipboard().setContent(content);
+        AlertHelper.showInfo("Đã sao chép", "Đã sao chép liên kết vào Clipboard:\n" + lblLanUrl.getText()
+                + "\n\nHãy gửi link này qua Zalo/Tin nhắn cho bạn bè cùng Wi-Fi để vào nghe nhạc thử!");
     }
 
     @FXML
@@ -105,7 +126,7 @@ public class ServerController implements Initializable, ServerListener {
 
     @FXML
     public void handleOpenBrowser() {
-        String url = "http://localhost:" + txtPort.getText().trim() + "/";
+        String url = lblLocalUrl.getText();
         try {
             Desktop.getDesktop().browse(URI.create(url));
         } catch (Exception e) {
@@ -136,15 +157,25 @@ public class ServerController implements Initializable, ServerListener {
             totalBytes += log.getContentLength();
             updateSummary();
 
+            String actionIcon = "👉";
+            String uri = log.getUri();
+            if (uri.contains(".mp3") || uri.contains(".mp4")) {
+                actionIcon = "🎵 [STREAM NHẠC]";
+            } else if (uri.contains("/downloads/") || uri.contains(".zip")) {
+                actionIcon = "📥 [TẢI FILE]";
+            } else if (uri.equals("/") || uri.contains(".html")) {
+                actionIcon = "🌐 [XEM WEB]";
+            }
+
             String desc = switch (log.getStatusCode()) {
-                case 200 -> "200 OK (Thành công)";
-                case 206 -> "206 Partial Content (Tua Video/Nhạc)";
-                case 404 -> "404 Not Found (Không tìm thấy)";
+                case 200 -> "200 OK";
+                case 206 -> "206 Partial Content (Tua nhạc)";
+                case 404 -> "404 Not Found";
                 default -> log.getStatusCode() + "";
             };
 
-            appendLog(String.format("👉 [%s] %s %s -> %s | %s",
-                    log.getClientIp(), log.getMethod(), log.getUri(), desc, FileUtils.formatFileSize(log.getContentLength())));
+            appendLog(String.format("%s [%s] %s %s -> %s | %s",
+                    actionIcon, log.getClientIp(), log.getMethod(), log.getUri(), desc, FileUtils.formatFileSize(log.getContentLength())));
         });
     }
 
@@ -154,6 +185,7 @@ public class ServerController implements Initializable, ServerListener {
             if (running) {
                 lblStatusBadge.setText("🟢 ĐANG HOẠT ĐỘNG (" + port + ")");
                 lblStatusBadge.setStyle("-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
+                updateUrlCards(String.valueOf(port));
             } else {
                 lblStatusBadge.setText("🔴 MÁY CHỦ ĐANG TẮT");
                 lblStatusBadge.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
