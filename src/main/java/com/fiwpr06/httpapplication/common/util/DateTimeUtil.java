@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class DateTimeUtil {
+    private static final long SERVER_START_TIME = System.currentTimeMillis();
+
     private static final DateTimeFormatter HTTP_DATE_FORMAT =
             DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
                     .withZone(ZoneOffset.UTC);
@@ -17,6 +19,10 @@ public class DateTimeUtil {
 
     private static final DateTimeFormatter TIME_ONLY_FORMAT =
             DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public static long getServerStartTime() {
+        return SERVER_START_TIME;
+    }
 
     public static String formatHttpDate(long epochMillis) {
         return HTTP_DATE_FORMAT.format(Instant.ofEpochMilli(epochMillis));

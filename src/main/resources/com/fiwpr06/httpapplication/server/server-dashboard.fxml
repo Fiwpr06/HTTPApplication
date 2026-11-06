@@ -7,103 +7,99 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.fiwpr06.httpapplication.server.controller.ServerController"
-            prefWidth="960" prefHeight="670"
-            style="-fx-background-color: #0F172A; -fx-font-family: 'Segoe UI', sans-serif;">
+            prefWidth="980" prefHeight="680"
+            stylesheets="@server.css"
+            styleClass="root">
 
     <!-- Top Header & Connection Guide -->
     <top>
-        <VBox spacing="12" style="-fx-background-color: #1E293B; -fx-padding: 16 20; -fx-border-color: #334155; -fx-border-width: 0 0 1 0;">
-            <!-- Header title & badges -->
-            <HBox alignment="CENTER_LEFT" spacing="12">
-                <Label text="HTTP" style="-fx-background-color: #00D2E6; -fx-text-fill: #0F172A; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 4 10; -fx-background-radius: 6;"/>
+        <VBox spacing="10">
+            <!-- Header HUD Bar -->
+            <HBox styleClass="hud-bar">
+                <Label text="HTTP" styleClass="hud-tag"/>
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Text text="MÁY CHỦ HTTP MULTI-SERVICE (LAB 4 - LTM)" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-fill: #F8FAFC;"/>
-                    <Text text="3 Dịch Vụ Mạng Cốt Lõi: Xem PDF (.pdf) • Stream Nhạc (.mp3) • Stream Video (.mp4)" style="-fx-font-size: 13px; -fx-fill: #94A3B8;"/>
+                    <Text text="HTTP MULTI-SERVICE APPLICATION SERVER" styleClass="hud-title"/>
+                    <Text text="Phục vụ 3 dịch vụ mạng: Xem PDF (.pdf) • Stream Nhạc (.mp3) • Stream Video (.mp4)" styleClass="hud-sub"/>
                 </VBox>
-                <Label fx:id="lblDbBadge" text="CSDL: SQLITE" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 5 12; -fx-background-radius: 12;"/>
-                <Label fx:id="lblStatusBadge" text="MÁY CHỦ ĐANG TẮT" style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;"/>
+                <Label fx:id="lblDbBadge" text="CSDL: SQLITE" styleClass="hud-badge-db"/>
+                <Label fx:id="lblStatusBadge" text="MAY CHU DANG TAT" styleClass="status-badge-stopped"/>
             </HBox>
 
-            <!-- Network Access Info Cards (Cho máy khác / điện thoại truy cập) -->
-            <HBox spacing="14" alignment="CENTER_LEFT">
-                <!-- Local Card -->
-                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
-                      style="-fx-background-color: #0F172A; -fx-padding: 10 14; -fx-border-color: #334155; -fx-border-radius: 8; -fx-background-radius: 8;">
-                    <Label text="LOCAL" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 8; -fx-background-radius: 4;"/>
-                    <VBox spacing="2" HBox.hgrow="ALWAYS">
-                        <Label text="Truy cập trên máy này:" style="-fx-text-fill: #94A3B8; -fx-font-size: 11px; -fx-font-weight: bold;"/>
-                        <Label fx:id="lblLocalUrl" text="http://localhost:8080/" style="-fx-text-fill: #38BDF8; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Consolas', monospace;"/>
-                    </VBox>
-                    <Button text="Mở Trình Duyệt" onAction="#handleOpenBrowser" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+            <!-- Network Access Info Cards (Light & High Legibility) -->
+            <VBox spacing="10" style="-fx-padding: 0 20;">
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <!-- Local Card -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" styleClass="card-local">
+                        <Label text="LOCAL" styleClass="badge-local-tag"/>
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <Label text="Truy cập trên máy này:" style="-fx-text-fill: #475569; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                            <Label fx:id="lblLocalUrl" text="http://localhost:8080/" styleClass="url-local-text"/>
+                        </VBox>
+                        <Button text="Mở Trình Duyệt" onAction="#handleOpenBrowser" styleClass="btn-utility-blue"/>
+                    </HBox>
+
+                    <!-- LAN Card -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" styleClass="card-lan">
+                        <Label text="LAN" styleClass="badge-lan-tag"/>
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <Label text="Điện thoại / Máy khác (cùng Wi-Fi):" style="-fx-text-fill: #047857; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                            <Label fx:id="lblLanUrl" text="http://192.168.1.1:8080/" styleClass="url-lan-text"/>
+                        </VBox>
+                        <Button text="Sao Chép URL" onAction="#handleCopyLanUrl" styleClass="btn-utility-green"/>
+                    </HBox>
                 </HBox>
 
-                <!-- LAN Card (Quan trọng cho điện thoại / máy bạn) -->
-                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
-                      style="-fx-background-color: #0F172A; -fx-padding: 10 14; -fx-border-color: #059669; -fx-border-radius: 8; -fx-background-radius: 8;">
-                    <Label text="LAN" style="-fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 8; -fx-background-radius: 4;"/>
-                    <VBox spacing="2" HBox.hgrow="ALWAYS">
-                        <Label text="Điện thoại / Máy khác (cùng Wi-Fi):" style="-fx-text-fill: #34D399; -fx-font-size: 11px; -fx-font-weight: bold;"/>
-                        <Label fx:id="lblLanUrl" text="http://192.168.1.1:8080/" style="-fx-text-fill: #10B981; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Consolas', monospace;"/>
-                    </VBox>
-                    <Button text="Sao Chép URL" onAction="#handleCopyLanUrl" style="-fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 6 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                <!-- Control Bar -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Cổng Port:" style="-fx-text-fill: #334155; -fx-font-weight: bold;"/>
+                    <TextField fx:id="txtPort" text="8080" prefWidth="75" style="-fx-font-size: 13px; -fx-padding: 6 8; -fx-border-color: #CBD5E1; -fx-border-radius: 6;"/>
+
+                    <Button fx:id="btnStartServer" text="Bật Máy Chủ" onAction="#handleStartServer" styleClass="btn-primary"/>
+                    <Button fx:id="btnStopServer" text="Tắt Máy Chủ" onAction="#handleStopServer" styleClass="btn-danger" disable="true"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Mở Thư Mục Web" onAction="#handleBrowseWebRoot" styleClass="btn-secondary"/>
+                    <Button text="Xóa Nhật Ký" onAction="#handleClearScreen" styleClass="btn-secondary"/>
                 </HBox>
-            </HBox>
 
-            <!-- Control Bar -->
-            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
-                <Label text="Cổng Port:" style="-fx-text-fill: #E2E8F0; -fx-font-weight: bold;"/>
-                <TextField fx:id="txtPort" text="8080" prefWidth="75" style="-fx-font-size: 13px; -fx-padding: 6 8;"/>
+                <!-- File Picker Toolbar -->
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="file-picker-bar">
+                    <Label text="Tự chọn file phát:" style="-fx-text-fill: #1E3A8A; -fx-font-size: 12px; -fx-font-weight: bold;"/>
 
-                <Button fx:id="btnStartServer" text="Bật Máy Chủ" onAction="#handleStartServer" style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;"/>
-                <Button fx:id="btnStopServer" text="Tắt Máy Chủ" onAction="#handleStopServer" style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;" disable="true"/>
+                    <Button text="[+] Chọn Nhạc MP3" onAction="#handleSelectAudio" styleClass="btn-file-picker"/>
+                    <Label fx:id="lblCurrentAudio" text="audio.mp3" maxWidth="150" style="-fx-text-fill: #0284C7; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
 
-                <Region HBox.hgrow="ALWAYS"/>
+                    <Separator orientation="VERTICAL" prefHeight="16"/>
 
-                <Button text="Mở Thư Mục Web" onAction="#handleBrowseWebRoot" style="-fx-background-color: #334155; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
-                <Button text="Xóa Nhật Ký" onAction="#handleClearScreen" style="-fx-background-color: #475569; -fx-text-fill: #E2E8F0; -fx-font-weight: 600; -fx-padding: 7 12; -fx-cursor: hand; -fx-background-radius: 6;"/>
-            </HBox>
+                    <Button text="[+] Chọn Video MP4" onAction="#handleSelectVideo" styleClass="btn-file-picker"/>
+                    <Label fx:id="lblCurrentVideo" text="video.mp4" maxWidth="150" style="-fx-text-fill: #059669; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
 
-            <!-- Custom Files Selection Bar (Chọn File Tùy Ý Từ Máy Tính) -->
-            <HBox spacing="10" alignment="CENTER_LEFT"
-                  style="-fx-background-color: #0F172A; -fx-padding: 8 14; -fx-border-color: #334155; -fx-border-radius: 6; -fx-background-radius: 6;">
-                <Label text="Tự chọn file phát:" style="-fx-text-fill: #94A3B8; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <Separator orientation="VERTICAL" prefHeight="16"/>
 
-                <Button text="[+] Chọn Nhạc MP3" onAction="#handleSelectAudio"
-                        style="-fx-background-color: #1E293B; -fx-text-fill: #38BDF8; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #0284C7; -fx-border-radius: 4;"/>
-                <Label fx:id="lblCurrentAudio" text="audio.mp3" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
-
-                <Separator orientation="VERTICAL" prefHeight="16"/>
-
-                <Button text="[+] Chọn Video MP4" onAction="#handleSelectVideo"
-                        style="-fx-background-color: #1E293B; -fx-text-fill: #34D399; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #059669; -fx-border-radius: 4;"/>
-                <Label fx:id="lblCurrentVideo" text="video.mp4" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
-
-                <Separator orientation="VERTICAL" prefHeight="16"/>
-
-                <Button text="[+] Chọn PDF" onAction="#handleSelectPdf"
-                        style="-fx-background-color: #1E293B; -fx-text-fill: #F59E0B; -fx-font-weight: 600; -fx-font-size: 11px; -fx-padding: 5 10; -fx-cursor: hand; -fx-background-radius: 4; -fx-border-color: #D97706; -fx-border-radius: 4;"/>
-                <Label fx:id="lblCurrentPdf" text="sample.pdf" maxWidth="150" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace;"/>
-            </HBox>
+                    <Button text="[+] Chọn PDF" onAction="#handleSelectPdf" styleClass="btn-file-picker"/>
+                    <Label fx:id="lblCurrentPdf" text="sample.pdf" maxWidth="150" style="-fx-text-fill: #D97706; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
+                </HBox>
+            </VBox>
         </VBox>
     </top>
 
-    <!-- Center: Live Terminal Log -->
+    <!-- Center: Live Terminal Log (Light Modern) -->
     <center>
-        <VBox spacing="8" style="-fx-padding: 14 20;">
+        <VBox spacing="8" style="-fx-padding: 12 20;">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="Nhật Ký Kết Nối &amp; Phục Vụ 3 Dịch Vụ (Live Real-time Log):" style="-fx-text-fill: #CBD5E1; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <Label text="Nhật Ký Kết Nối &amp; Phục Vụ 3 Dịch Vụ (Real-time Log):" style="-fx-text-fill: #1E3A8A; -fx-font-weight: bold; -fx-font-size: 13px;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Label text="[Mẹo] Thiết bị khác gõ link LAN màu xanh bên trên để truy cập" style="-fx-text-fill: #10B981; -fx-font-size: 12px;"/>
+                <Label text="[Mẹo] Thiết bị khác gõ link LAN màu xanh bên trên để truy cập" style="-fx-text-fill: #059669; -fx-font-size: 12px; -fx-font-weight: 500;"/>
             </HBox>
-            <TextArea fx:id="txtConsoleLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
-                      style="-fx-control-inner-background: #020617; -fx-text-fill: #38BDF8; -fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-border-color: #334155; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8;"/>
+            <TextArea fx:id="txtConsoleLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS" styleClass="console-light"/>
         </VBox>
     </center>
 
     <!-- Bottom: Summary Stats -->
     <bottom>
-        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #1E293B; -fx-padding: 10 20; -fx-border-color: #334155; -fx-border-width: 1 0 0 0;">
-            <Label fx:id="lblSummary" text="Tổng yêu cầu đã nhận: 0 | Tổng lưu lượng: 0 B | Địa chỉ IP máy chủ: 127.0.0.1" style="-fx-text-fill: #94A3B8; -fx-font-size: 13px; -fx-font-weight: 500;"/>
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="footer-bar">
+            <Label fx:id="lblSummary" text="Tổng yêu cầu đã nhận: 0 | Tổng lưu lượng: 0 B | Địa chỉ IP máy chủ: 127.0.0.1" style="-fx-text-fill: #475569; -fx-font-size: 12.5px; -fx-font-weight: 500;"/>
         </HBox>
     </bottom>
 

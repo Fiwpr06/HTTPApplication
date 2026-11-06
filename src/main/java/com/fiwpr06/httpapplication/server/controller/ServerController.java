@@ -68,7 +68,7 @@ public class ServerController implements Initializable, ServerListener {
         updateSummary();
 
         appendLog("=== MAY CHU HTTP MULTI-SERVICE (LAB 4 - LTM) SAN SANG ===");
-        appendLog("He dieu hanh: Windows | Java 21 | CSDL: " + dbType);
+        appendLog("Giao dien: Light Modern High-Legibility | Java 21 | CSDL: " + dbType);
         appendLog("3 Dich vu: [1] Stream Nhac MP3  [2] Stream Video MP4  [3] Xem Tai lieu PDF");
         appendLog("Thu muc web luu tru: " + webRoot.getAbsolutePath());
         appendLog("Dia chi mang LAN (cho thiet bi khac): http://" + localIp + ":8080/");
@@ -136,9 +136,10 @@ public class ServerController implements Initializable, ServerListener {
                 File target = new File(webRoot, "media/audio.mp3");
                 if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
                 Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                target.setLastModified(System.currentTimeMillis());
                 lblCurrentAudio.setText(file.getName());
-                appendLog("[CAP NHAT FILE] Da nap thanh cong bai hat: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp bài hát: " + file.getName() + "\nMở trình duyệt và bấm Play để nghe ngay!");
+                appendLog("[CAP NHAT TEP] Da nap thanh cong bai hat: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp bài hát: " + file.getName() + "\nTrang web sẽ tự động nhận bài hát mới ngay tức thì!");
             } catch (Exception e) {
                 AlertHelper.showError("Lỗi", "Không thể nạp tệp âm thanh: " + e.getMessage());
             }
@@ -159,9 +160,10 @@ public class ServerController implements Initializable, ServerListener {
                 File target = new File(webRoot, "media/video.mp4");
                 if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
                 Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                target.setLastModified(System.currentTimeMillis());
                 lblCurrentVideo.setText(file.getName());
-                appendLog("[CAP NHAT FILE] Da nap thanh cong video: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp video: " + file.getName() + "\nMở trình duyệt và bấm Play để xem ngay!");
+                appendLog("[CAP NHAT TEP] Da nap thanh cong video: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp video: " + file.getName() + "\nTrang web sẽ tự động nhận video mới ngay tức thì!");
             } catch (Exception e) {
                 AlertHelper.showError("Lỗi", "Không thể nạp tệp video: " + e.getMessage());
             }
@@ -182,9 +184,10 @@ public class ServerController implements Initializable, ServerListener {
                 File target = new File(webRoot, "documents/sample.pdf");
                 if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
                 Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                target.setLastModified(System.currentTimeMillis());
                 lblCurrentPdf.setText(file.getName());
-                appendLog("[CAP NHAT FILE] Da nap thanh cong tai lieu PDF: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp tài liệu PDF: " + file.getName() + "\nMở trình duyệt hoặc F5 để đọc ngay!");
+                appendLog("[CAP NHAT TEP] Da nap thanh cong tai lieu PDF: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
+                AlertHelper.showInfo("Thành Công", "Đã nạp tài liệu PDF: " + file.getName() + "\nTrang web sẽ tự động hiển thị PDF mới ngay tức thì!");
             } catch (Exception e) {
                 AlertHelper.showError("Lỗi", "Không thể nạp tài liệu PDF: " + e.getMessage());
             }
@@ -266,11 +269,17 @@ public class ServerController implements Initializable, ServerListener {
         Platform.runLater(() -> {
             if (running) {
                 lblStatusBadge.setText("DANG HOAT DONG (" + port + ")");
-                lblStatusBadge.setStyle("-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;");
+                lblStatusBadge.getStyleClass().removeAll("status-badge-stopped");
+                if (!lblStatusBadge.getStyleClass().contains("status-badge-running")) {
+                    lblStatusBadge.getStyleClass().add("status-badge-running");
+                }
                 updateUrlCards(String.valueOf(port));
             } else {
                 lblStatusBadge.setText("MAY CHU DANG TAT");
-                lblStatusBadge.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 12;");
+                lblStatusBadge.getStyleClass().removeAll("status-badge-running");
+                if (!lblStatusBadge.getStyleClass().contains("status-badge-stopped")) {
+                    lblStatusBadge.getStyleClass().add("status-badge-stopped");
+                }
             }
         });
     }

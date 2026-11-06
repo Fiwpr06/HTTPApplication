@@ -1,0 +1,236 @@
+/* ==========================================================================
+   HTTP MULTI-SERVICE SERVER DASHBOARD - LIGHT MODERN HIGH-LEGIBILITY DESIGN
+   Tối ưu độ sắc nét, tương phản cao, dễ nhìn, đồng bộ chuẩn Lab FTP & RMI
+   ========================================================================== */
+
+.root {
+    -fx-base: #F8FAFC;
+    -fx-background-color: #F8FAFC;
+    -fx-font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: #0F172A;
+}
+
+/* Header HUD Bar */
+.hud-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CBD5E1;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 14px 20px;
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(three-pass-box, rgba(15, 23, 42, 0.05), 8, 0, 0, 2);
+}
+
+.hud-title {
+    -fx-text-fill: #1E3A8A;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.hud-sub {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 12px;
+}
+
+.hud-tag {
+    -fx-background-color: #0284C7;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 4px;
+}
+
+.hud-badge-db {
+    -fx-background-color: #E0F2FE;
+    -fx-text-fill: #0284C7;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-padding: 5px 12px;
+    -fx-background-radius: 12px;
+    -fx-border-color: #BAE6FD;
+    -fx-border-radius: 12px;
+}
+
+.status-badge-running {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #059669;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 14px;
+    -fx-background-radius: 12px;
+    -fx-border-color: #86EFAC;
+    -fx-border-radius: 12px;
+}
+
+.status-badge-stopped {
+    -fx-background-color: #FEE2E2;
+    -fx-text-fill: #DC2626;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 14px;
+    -fx-background-radius: 12px;
+    -fx-border-color: #FCA5A5;
+    -fx-border-radius: 12px;
+}
+
+/* Connection Cards */
+.card-local {
+    -fx-background-color: #F0F9FF;
+    -fx-border-color: #BAE6FD;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 14px;
+}
+
+.card-lan {
+    -fx-background-color: #F0FDF4;
+    -fx-border-color: #86EFAC;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 14px;
+}
+
+.badge-local-tag {
+    -fx-background-color: #0284C7;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+    -fx-padding: 3px 6px;
+    -fx-background-radius: 4px;
+}
+
+.badge-lan-tag {
+    -fx-background-color: #059669;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+    -fx-padding: 3px 6px;
+    -fx-background-radius: 4px;
+}
+
+.url-local-text {
+    -fx-text-fill: #0284C7;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Consolas', monospace;
+}
+
+.url-lan-text {
+    -fx-text-fill: #059669;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Consolas', monospace;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #16A34A;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 16px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: #15803D;
+}
+
+.btn-danger {
+    -fx-background-color: #DC2626;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 16px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.btn-danger:hover {
+    -fx-background-color: #B91C1C;
+}
+
+.btn-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #334155;
+    -fx-font-weight: 600;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #0F172A;
+}
+
+.btn-utility-blue {
+    -fx-background-color: #0284C7;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: 600;
+    -fx-font-size: 11px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.btn-utility-blue:hover {
+    -fx-background-color: #0369A1;
+}
+
+.btn-utility-green {
+    -fx-background-color: #059669;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: 600;
+    -fx-font-size: 11px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.btn-utility-green:hover {
+    -fx-background-color: #047857;
+}
+
+.btn-file-picker {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1E3A8A;
+    -fx-font-weight: 600;
+    -fx-font-size: 11px;
+    -fx-padding: 5px 10px;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+.btn-file-picker:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: #94A3B8;
+}
+
+/* File Picker Toolbar */
+.file-picker-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 14px;
+}
+
+/* Console Log Area */
+.console-light {
+    -fx-control-inner-background: #FFFFFF;
+    -fx-text-fill: #0F172A;
+    -fx-font-family: 'Consolas', monospace;
+    -fx-font-size: 12.5px;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+/* Footer Status Bar */
+.footer-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CBD5E1;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 10px 20px;
+}
