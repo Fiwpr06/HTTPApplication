@@ -1,0 +1,197 @@
+/* Cyberpunk Dark Slate - Server Dashboard Styling */
+.root {
+    -fx-font-family: "Segoe UI", -apple-system, sans-serif;
+    -fx-base: #0B0E14;
+    -fx-background-color: #0B0E14;
+}
+
+.header-panel {
+    -fx-background-color: #111620;
+    -fx-border-color: #2D3748;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 16 24;
+}
+
+.title-text {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: #E2E8F0;
+}
+
+.subtitle-text {
+    -fx-font-size: 13px;
+    -fx-fill: #94A3B8;
+}
+
+.badge-online {
+    -fx-background-color: rgba(46, 230, 138, 0.15);
+    -fx-border-color: #2EE68A;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 4 12;
+    -fx-text-fill: #2EE68A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.badge-offline {
+    -fx-background-color: rgba(255, 59, 86, 0.15);
+    -fx-border-color: #FF3B56;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 4 12;
+    -fx-text-fill: #FF3B56;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.badge-db {
+    -fx-background-color: rgba(0, 210, 230, 0.15);
+    -fx-border-color: #00D2E6;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 4 12;
+    -fx-text-fill: #00D2E6;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Stat Cards */
+.stat-card {
+    -fx-background-color: #161B26;
+    -fx-border-color: #2D3748;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 14 18;
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-fill: #94A3B8;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-fill: #00D2E6;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #00D2E6;
+    -fx-text-fill: #0B0E14;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #00B4C6;
+}
+
+.btn-success {
+    -fx-background-color: #2EE68A;
+    -fx-text-fill: #0B0E14;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-success:hover {
+    -fx-background-color: #25C775;
+}
+
+.btn-danger {
+    -fx-background-color: #FF3B56;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #E02844;
+}
+
+.btn-secondary {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #334155;
+    -fx-text-fill: #E2E8F0;
+    -fx-font-weight: 600;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 7 14;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #334155;
+}
+
+/* Text Fields */
+.text-field {
+    -fx-background-color: #161B26;
+    -fx-border-color: #2D3748;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-text-fill: #E2E8F0;
+    -fx-padding: 7 12;
+}
+
+.text-field:focused {
+    -fx-border-color: #00D2E6;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: #111620;
+    -fx-border-color: #2D3748;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #161B26;
+    -fx-border-color: #2D3748;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10 8;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #94A3B8;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.table-row-cell {
+    -fx-background-color: #111620;
+    -fx-border-color: #1C2333;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: #E2E8F0;
+    -fx-font-size: 13px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #141A26;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #1E293B;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #232E42;
+}
+
+.table-cell {
+    -fx-padding: 8;
+    -fx-text-fill: #E2E8F0;
+}
