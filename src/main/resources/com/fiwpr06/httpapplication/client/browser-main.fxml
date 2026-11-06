@@ -3,52 +3,160 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.fiwpr06.httpapplication.client.controller.BrowserController"
-            stylesheets="@../css/browser-style.css" prefWidth="1180" prefHeight="760">
+            prefWidth="1050" prefHeight="720"
+            style="-fx-background-color: #F8FAFC; -fx-font-family: 'Segoe UI', sans-serif;">
 
+    <!-- Top: Window Title and Main Tabs -->
     <top>
         <VBox spacing="0">
-            <!-- TabPane for Multi-Tab Browsing -->
-            <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" prefHeight="38"/>
-
-            <!-- Omnibox & Navigation Toolbar -->
-            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="toolbar-container">
-                <Button fx:id="btnBack" text="◀" onAction="#handleBack" styleClass="nav-btn" tooltip="$toolTipBack"/>
-                <Button fx:id="btnForward" text="▶" onAction="#handleForward" styleClass="nav-btn" tooltip="$toolTipFwd"/>
-                <Button fx:id="btnReload" text="🔄" onAction="#handleReload" styleClass="nav-btn" tooltip="$toolTipReload"/>
-                <Button fx:id="btnHome" text="🏠" onAction="#handleHome" styleClass="nav-btn" tooltip="$toolTipHome"/>
-
-                <TextField fx:id="txtUrl" promptText="Nhập URL hoặc địa chỉ web (VD: http://localhost:8080/)..."
-                           onAction="#handleNavigate" HBox.hgrow="ALWAYS" styleClass="omnibox"/>
-
-                <Button fx:id="btnInspect" text="📋 HEAD Inspector" onAction="#handleOpenInspector" styleClass="tool-btn"/>
-                <Button fx:id="btnPostTest" text="🧪 POST Tester" onAction="#handleOpenPostTester" styleClass="tool-btn"/>
-                <Button fx:id="btnDownloads" text="📥 Downloads" onAction="#handleOpenDownloads" styleClass="tool-btn"/>
-                <Button fx:id="btnHistory" text="🕒 Lịch Sử" onAction="#handleOpenHistory" styleClass="tool-btn"/>
-                <Button fx:id="btnNewTab" text="➕" onAction="#handleNewTab" styleClass="tool-btn-primary"/>
+            <!-- Window Banner -->
+            <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: #0284C7; -fx-padding: 10 16;">
+                <Text text="🌐 TRÌNH DUYỆT WEB (WEB BROWSER - LAB 4 LTM)" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Chuẩn giao thức: HTTP/1.1 (GET, HEAD, POST)" style="-fx-text-fill: #E0F2FE; -fx-font-size: 12px; -fx-font-weight: 500;"/>
             </HBox>
-
-            <!-- Bookmarks Bar -->
-            <HBox spacing="6" alignment="CENTER_LEFT" styleClass="bookmarks-bar">
-                <Button text="🏠 Trang Chủ" onAction="#handleBookmarkHome" styleClass="bookmark-link"/>
-                <Button text="🎬 Video (.mp4)" onAction="#handleBookmarkVideo" styleClass="bookmark-link"/>
-                <Button text="🎵 Âm Thanh (.mp3)" onAction="#handleBookmarkAudio" styleClass="bookmark-link"/>
-                <Button text="📄 Tài Liệu (.pdf)" onAction="#handleBookmarkPdf" styleClass="bookmark-link"/>
-                <Button text="📦 Tải File (.zip)" onAction="#handleBookmarkZip" styleClass="bookmark-link"/>
-                <Button text="📝 Form POST" onAction="#handleBookmarkForm" styleClass="bookmark-link"/>
-                <Button text="⚡ API Status" onAction="#handleBookmarkApi" styleClass="bookmark-link"/>
-            </HBox>
-
-            <!-- Loading Progress Indicator -->
-            <ProgressBar fx:id="progressBar" prefHeight="3" prefWidth="10000" visible="false" styleClass="progress-bar"/>
         </VBox>
     </top>
 
-    <!-- Center Content: TabPane content is managed dynamically in Controller -->
+    <!-- Center: 4 Main Tabs -->
     <center>
-        <StackPane fx:id="contentContainer"/>
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" style="-fx-background-color: #F8FAFC;">
+
+            <!-- ================= TAB 1: DUYỆT WEB ================= -->
+            <Tab text="🌐 1. Duyệt Web Trực Quan">
+                <VBox spacing="0">
+                    <!-- Navigation & Address Bar -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-background-color: #FFFFFF; -fx-padding: 8 16; -fx-border-color: #E2E8F0; -fx-border-width: 0 0 1 0;">
+                        <Button fx:id="btnBack" text="◀" onAction="#handleBack" style="-fx-background-color: #F1F5F9; -fx-font-size: 13px; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 6 10;"/>
+                        <Button fx:id="btnForward" text="▶" onAction="#handleForward" style="-fx-background-color: #F1F5F9; -fx-font-size: 13px; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 6 10;"/>
+                        <Button text="🔄" onAction="#handleReload" style="-fx-background-color: #F1F5F9; -fx-font-size: 13px; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 6 10;"/>
+                        <Button text="🏠" onAction="#handleHome" style="-fx-background-color: #F1F5F9; -fx-font-size: 13px; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 6 10;"/>
+
+                        <TextField fx:id="txtUrl" text="http://localhost:8080/" onAction="#handleNavigate" HBox.hgrow="ALWAYS"
+                                   style="-fx-background-color: #F1F5F9; -fx-border-color: #CBD5E1; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 7 16; -fx-font-size: 13px;"/>
+
+                        <Button text="Đi tới ➔" onAction="#handleNavigate" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 20;"/>
+                    </HBox>
+
+                    <!-- Bookmarks bar -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-background-color: #F8FAFC; -fx-padding: 6 16; -fx-border-color: #E2E8F0; -fx-border-width: 0 0 1 0;">
+                        <Label text="Dịch vụ nhanh:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748B;"/>
+                        <Button text="🏠 Trang Chủ" onAction="#handleBookmarkHome" style="-fx-background-color: transparent; -fx-text-fill: #0284C7; -fx-font-size: 12px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                        <Button text="🎬 Xem Video (.mp4)" onAction="#handleBookmarkVideo" style="-fx-background-color: transparent; -fx-text-fill: #0284C7; -fx-font-size: 12px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                        <Button text="🎵 Nghe Nhạc (.mp3)" onAction="#handleBookmarkAudio" style="-fx-background-color: transparent; -fx-text-fill: #0284C7; -fx-font-size: 12px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                        <Button text="📄 Đọc PDF (.pdf)" onAction="#handleBookmarkPdf" style="-fx-background-color: transparent; -fx-text-fill: #0284C7; -fx-font-size: 12px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                        <Button text="📦 Tải File (.zip)" onAction="#handleBookmarkZip" style="-fx-background-color: transparent; -fx-text-fill: #0284C7; -fx-font-size: 12px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- Loading Progress Indicator -->
+                    <ProgressBar fx:id="progressBar" prefHeight="3" prefWidth="10000" visible="false" style="-fx-accent: #0284C7;"/>
+
+                    <!-- Main Web View -->
+                    <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
+                </VBox>
+            </Tab>
+
+            <!-- ================= TAB 2: KIỂM TRA HTTP GET/HEAD/POST ================= -->
+            <Tab text="🧪 2. Kiểm Tra HTTP (GET, HEAD, POST)">
+                <VBox spacing="14" style="-fx-padding: 16 20;">
+                    <VBox spacing="4">
+                        <Text text="Kiểm Tra Chi Tiết Các Phương Thức Giao Thức HTTP" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: #0F172A;"/>
+                        <Text text="Gửi truy vấn HTTP trực tiếp lên Server để kiểm tra mã trạng thái, Header và phần thân Body trả về." style="-fx-font-size: 13px; -fx-fill: #64748B;"/>
+                    </VBox>
+
+                    <!-- Request Form -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 12 16; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                        <Label text="Phương Thức:" style="-fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                        <ComboBox fx:id="cmbMethod" prefWidth="100"/>
+
+                        <Label text="URL:" style="-fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                        <TextField fx:id="txtHttpTesterUrl" text="http://localhost:8080/documents/sample.pdf" HBox.hgrow="ALWAYS" style="-fx-font-size: 13px; -fx-padding: 6 10;"/>
+
+                        <Button text="🚀 Gửi Yêu Cầu HTTP" onAction="#handleSendHttpRequest" style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 16; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                    </HBox>
+
+                    <!-- POST Data Input -->
+                    <VBox fx:id="boxPostData" spacing="6" style="-fx-background-color: white; -fx-padding: 12 16; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                        <Label text="Dữ liệu gửi kèm (Chỉ dùng cho POST):" style="-fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                        <TextField fx:id="txtPostPayload" text="fullName=Hà Trọng Phi&amp;studentId=24ITB150&amp;feedback=Lab 4 hoàn thành tốt!" style="-fx-font-family: monospace; -fx-font-size: 13px; -fx-padding: 6 10;"/>
+                    </VBox>
+
+                    <!-- Response Section -->
+                    <HBox spacing="16" VBox.vgrow="ALWAYS">
+                        <!-- Left: Status & Headers -->
+                        <VBox spacing="8" prefWidth="440" style="-fx-background-color: white; -fx-padding: 14; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="Mã Phản Hồi:" style="-fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                                <Label fx:id="lblHttpStatus" text="Chưa gửi yêu cầu" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #64748B;"/>
+                            </HBox>
+                            <Label text="Bảng Headers Máy Chủ Trả Về:" style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-font-size: 12px;"/>
+                            <TextArea fx:id="txtResponseHeaders" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                                      style="-fx-font-family: monospace; -fx-font-size: 12px; -fx-control-inner-background: #F8FAFC;"/>
+                        </VBox>
+
+                        <!-- Right: Response Body -->
+                        <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 14; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="Nội Dung Phản Hồi (Response Body):" style="-fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                            <TextArea fx:id="txtResponseBody" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                                      style="-fx-font-family: monospace; -fx-font-size: 12px; -fx-control-inner-background: #F8FAFC;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- ================= TAB 3: LỊCH SỬ DUYỆT WEB ================= -->
+            <Tab text="🕒 3. Lịch Sử Duyệt (History)">
+                <VBox spacing="12" style="-fx-padding: 16 20;">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Danh Sách Các Trang Web Đã Truy Cập:" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-fill: #0F172A;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="🌐 Mở Lại Trang Đang Chọn" onAction="#handleOpenSelectedHistory" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 14; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                        <Button text="🗑️ Xóa Lịch Sử" onAction="#handleClearHistory" style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 14; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                    </HBox>
+
+                    <TableView fx:id="tblHistory" VBox.vgrow="ALWAYS">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="colHistoryTitle" text="Tiêu đề trang" minWidth="250"/>
+                            <TableColumn fx:id="colHistoryUrl" text="Địa chỉ URL" minWidth="350"/>
+                            <TableColumn fx:id="colHistoryTime" text="Thời gian xem" minWidth="160" maxWidth="180"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- ================= TAB 4: QUẢN LÝ TẢI VỀ ================= -->
+            <Tab text="📥 4. Quản Lý Tải Về (Downloads)">
+                <VBox spacing="12" style="-fx-padding: 16 20;">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Danh Sách Các Tệp Tin Đang Tải &amp; Đã Tải Về:" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-fill: #0F172A;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="📂 Mở Thư Mục Downloads" onAction="#handleOpenDownloadsFolder" style="-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 14; -fx-cursor: hand; -fx-background-radius: 6;"/>
+                    </HBox>
+
+                    <TableView fx:id="tblDownloads" VBox.vgrow="ALWAYS">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="colDownloadName" text="Tên tệp tin" minWidth="200"/>
+                            <TableColumn fx:id="colDownloadStatus" text="Trạng thái" minWidth="100" maxWidth="120"/>
+                            <TableColumn fx:id="colDownloadProgress" text="Tiến trình" minWidth="180"/>
+                            <TableColumn fx:id="colDownloadSpeed" text="Tốc độ" minWidth="90" maxWidth="110"/>
+                            <TableColumn fx:id="colDownloadSize" text="Dung lượng" minWidth="130" maxWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+        </TabPane>
     </center>
 
 </BorderPane>

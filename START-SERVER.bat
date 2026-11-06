@@ -1,10 +1,11 @@
 @echo off
-chcp 65001 > nul
-title WebServerPro — HTTP Web Server Dashboard (Lab 4 LTM)
+setlocal
 cd /d "%~dp0"
+chcp 65001 >nul
+title HTTP Application Server Dashboard (Lab 4 LTM)
 
 echo ========================================================
-echo   ⚡ KHỞI ĐỘNG HTTP WEB SERVER DASHBOARD (CỔNG 8080)
+echo   ⚡ KHỞI ĐỘNG HTTP WEB SERVER (CỔNG 8080)
 echo ========================================================
 echo.
 
@@ -15,10 +16,10 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8080 ^| findstr LISTENING') 
 )
 
 echo Dang bien dich va khoi chay Server Dashboard...
-call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.httpapplication/com.fiwpr06.httpapplication.server.ServerLauncher"
+call .\mvnw.cmd javafx:run -Pserver
 
-if %ERRORLEVEL% NEQ 0 (
+if %ERRORLEVEL% neq 0 (
     echo.
-    echo [LOI] Khong the khoi chay Server! Vui long kiem tra lai moi truong Java.
+    echo [LOI] Khong the khoi chay Server! Vui long kiem tra moi truong JDK 21.
     pause
 )

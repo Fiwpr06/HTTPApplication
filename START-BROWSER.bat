@@ -1,18 +1,19 @@
 @echo off
-chcp 65001 > nul
-title WebBrowserPro — Chrome/CocCoc Style Browser (Lab 4 LTM)
+setlocal
 cd /d "%~dp0"
+chcp 65001 >nul
+title Web Browser Client (Lab 4 LTM)
 
 echo ========================================================
-echo   🌐 KHỞI ĐỘNG TRÌNH DUYỆT WEB BROWSER (CHROME STYLE)
+echo   🌐 KHỞI ĐỘNG TRÌNH DUYỆT WEB BROWSER
 echo ========================================================
 echo.
 
-echo Dang bien dich va khoi chay Trinh duyet Web...
-call mvnw.cmd javafx:run -Djavafx.mainClass="com.fiwpr06.httpapplication/com.fiwpr06.httpapplication.client.BrowserLauncher"
+echo Dang bien dich va khoi chay Trinh duyet...
+call .\mvnw.cmd javafx:run -Pclient
 
-if %ERRORLEVEL% NEQ 0 (
+if %ERRORLEVEL% neq 0 (
     echo.
-    echo [LOI] Khong the khoi chay Trinh duyet! Vui long kiem tra lai moi truong Java.
+    echo [LOI] Khong the khoi chay Trinh duyet! Vui long kiem tra moi truong JDK 21.
     pause
 )

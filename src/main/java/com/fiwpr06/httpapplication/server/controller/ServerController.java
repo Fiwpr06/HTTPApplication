@@ -10,22 +10,15 @@ import com.fiwpr06.httpapplication.server.core.ServerListener;
 import com.fiwpr06.httpapplication.server.database.AccessLogDao;
 import com.fiwpr06.httpapplication.server.database.DatabaseManager;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.text.Text;
-import javafx.stage.DirectoryChooser;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class ServerController implements Initializable, ServerListener {
@@ -33,89 +26,40 @@ public class ServerController implements Initializable, ServerListener {
     @FXML private Label lblDbBadge;
     @FXML private Label lblStatusBadge;
     @FXML private TextField txtPort;
-    @FXML private TextField txtWebRoot;
-    @FXML private Button btnBrowseWebRoot;
     @FXML private Button btnStartServer;
     @FXML private Button btnStopServer;
-    @FXML private Button btnCopyUrl;
-    @FXML private Button btnOpenBrowser;
-
-    @FXML private Text lblTotalRequests;
-    @FXML private Text lblTotalBytes;
-    @FXML private Text lblLocalIp;
-
-    @FXML private TextField txtSearch;
-    @FXML private TableView<AccessLog> tblLogs;
-    @FXML private TableColumn<AccessLog, Integer> colId;
-    @FXML private TableColumn<AccessLog, String> colTime;
-    @FXML private TableColumn<AccessLog, String> colIp;
-    @FXML private TableColumn<AccessLog, String> colMethod;
-    @FXML private TableColumn<AccessLog, String> colUri;
-    @FXML private TableColumn<AccessLog, Integer> colStatus;
-    @FXML private TableColumn<AccessLog, String> colLength;
-    @FXML private TableColumn<AccessLog, String> colUserAgent;
+    @FXML private TextArea txtConsoleLog;
+    @FXML private Label lblSummary;
 
     private final HttpServerEngine serverEngine = new HttpServerEngine();
     private final AccessLogDao logDao = new AccessLogDao();
-    private final ObservableList<AccessLog> logList = FXCollections.observableArrayList();
-    private FilteredList<AccessLog> filteredLogs;
+    private final File webRoot = new File("web_root");
 
-    private long totalRequestsCount = 0;
-    private long totalBytesCount = 0;
+    private long totalRequests = 0;
+    private long totalBytes = 0;
+    private String localIp = "127.0.0.1";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         serverEngine.setListener(this);
 
-        // Database badge
+        // Database status
         String dbType = DatabaseManager.getInstance().getActiveDbType().name();
-        lblDbBadge.setText("DATABASE: " + dbType);
+        lblDbBadge.setText("CSDL: " + dbType);
 
-        // Local IP
-        String localIp = NetworkUtil.getLocalIpv4Address();
-        lblLocalIp.setText(localIp);
+        localIp = NetworkUtil.getLocalIpv4Address();
 
-        // Setup TableView Columns
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colTime.setCellValueFactory(cell -> new SimpleStringProperty(DateTimeUtil.formatDisplay(cell.getValue().getTimestamp())));
-        colIp.setCellValueFactory(new PropertyValueFactory<>("clientIp"));
-        colMethod.setCellValueFactory(new PropertyValueFactory<>("method"));
-        colUri.setCellValueFactory(new PropertyValueFactory<>("uri"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("statusCode"));
-        colLength.setCellValueFactory(cell -> new SimpleStringProperty(FileUtils.formatFileSize(cell.getValue().getContentLength())));
-        colUserAgent.setCellValueFactory(new PropertyValueFactory<>("userAgent"));
+        // Initial stats
+        totalRequests = logDao.getTotalRequests();
+        totalBytes = logDao.getTotalBytesSent();
+        updateSummary();
 
-        // Custom Cell Factory for HTTP Status Code coloring
-        colStatus.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Integer statusCode, boolean empty) {
-                super.updateItem(statusCode, empty);
-                if (empty || statusCode == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(String.valueOf(statusCode));
-                    if (statusCode == 200) {
-                        setStyle("-fx-text-fill: #2EE68A; -fx-font-weight: bold;"); // Green
-                    } else if (statusCode == 206) {
-                        setStyle("-fx-text-fill: #00D2E6; -fx-font-weight: bold;"); // Cyan
-                    } else if (statusCode == 404) {
-                        setStyle("-fx-text-fill: #F59E0B; -fx-font-weight: bold;"); // Orange
-                    } else {
-                        setStyle("-fx-text-fill: #FF3B56; -fx-font-weight: bold;"); // Red
-                    }
-                }
-            }
-        });
+        appendLog("=== MÁY CHỦ HTTP WEB SERVER SẴN SÀNG ===");
+        appendLog("Hệ điều hành: Windows | Môi trường: JDK 21 | CSDL: " + dbType);
+        appendLog("Thư mục web phục vụ: " + webRoot.getAbsolutePath());
+        appendLog("Nhấn nút [▶ Bật Máy Chủ] để bắt đầu lắng nghe kết nối.");
 
-        // Search Filter
-        filteredLogs = new FilteredList<>(logList, p -> true);
-        tblLogs.setItems(filteredLogs);
-
-        // Load initial records from database
-        handleReloadLogs();
-
-        // Auto-start server on launch
+        // Auto start server on launch
         Platform.runLater(this::handleStartServer);
     }
 
@@ -130,17 +74,12 @@ public class ServerController implements Initializable, ServerListener {
             return;
         }
 
-        File root = new File(txtWebRoot.getText().trim());
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-
-        boolean success = serverEngine.start(port, root);
+        boolean success = serverEngine.start(port, webRoot);
         if (success) {
             txtPort.setDisable(true);
-            btnBrowseWebRoot.setDisable(true);
             btnStartServer.setDisable(true);
             btnStopServer.setDisable(false);
+            appendLog("🚀 [THÀNH CÔNG] Máy chủ đã khởi động tại cổng " + port + ". Địa chỉ truy cập: http://" + localIp + ":" + port + "/");
         }
     }
 
@@ -148,85 +87,64 @@ public class ServerController implements Initializable, ServerListener {
     public void handleStopServer() {
         serverEngine.stop();
         txtPort.setDisable(false);
-        btnBrowseWebRoot.setDisable(false);
         btnStartServer.setDisable(false);
         btnStopServer.setDisable(true);
+        appendLog("⏹ [DỪNG] Máy chủ HTTP đã dừng hoạt động.");
     }
 
     @FXML
     public void handleBrowseWebRoot() {
-        DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setTitle("Chọn Thư mục Web Root");
-        chooser.setInitialDirectory(new File("."));
-        File selected = chooser.showDialog(txtPort.getScene().getWindow());
-        if (selected != null) {
-            txtWebRoot.setText(selected.getPath());
+        try {
+            if (webRoot.exists()) {
+                Desktop.getDesktop().open(webRoot);
+            }
+        } catch (Exception e) {
+            AlertHelper.showError("Lỗi", "Không thể mở thư mục: " + e.getMessage());
         }
-    }
-
-    @FXML
-    public void handleCopyUrl() {
-        String url = "http://localhost:" + txtPort.getText().trim() + "/";
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(url);
-        clipboard.setContent(content);
-        AlertHelper.showInfo("Đã sao chép", "Đã sao chép đường dẫn: " + url + " vào Clipboard!");
     }
 
     @FXML
     public void handleOpenBrowser() {
         String url = "http://localhost:" + txtPort.getText().trim() + "/";
         try {
-            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            Desktop.getDesktop().browse(URI.create(url));
         } catch (Exception e) {
             AlertHelper.showWarning("Thông báo", "Vui lòng mở trình duyệt và truy cập: " + url);
         }
     }
 
     @FXML
-    public void handleFilterLogs() {
-        String keyword = txtSearch.getText().trim().toLowerCase();
-        filteredLogs.setPredicate(log -> {
-            if (keyword.isEmpty()) return true;
-            return (log.getClientIp() != null && log.getClientIp().toLowerCase().contains(keyword))
-                    || (log.getUri() != null && log.getUri().toLowerCase().contains(keyword))
-                    || (log.getMethod() != null && log.getMethod().toLowerCase().contains(keyword))
-                    || String.valueOf(log.getStatusCode()).contains(keyword);
-        });
-    }
-
-    @FXML
-    public void handleReloadLogs() {
-        List<AccessLog> recent = logDao.getRecentLogs(100);
-        logList.clear();
-        logList.addAll(recent);
-
-        totalRequestsCount = logDao.getTotalRequests();
-        totalBytesCount = logDao.getTotalBytesSent();
-        updateStatDisplays();
-    }
-
-    @FXML
     public void handleClearScreen() {
-        logList.clear();
+        txtConsoleLog.clear();
+        appendLog("=== Đã làm sạch màn hình nhật ký ===");
     }
 
-    private void updateStatDisplays() {
-        lblTotalRequests.setText(String.valueOf(totalRequestsCount));
-        lblTotalBytes.setText(FileUtils.formatFileSize(totalBytesCount));
+    private void appendLog(String message) {
+        String time = DateTimeUtil.formatTimeOnly(LocalDateTime.now());
+        txtConsoleLog.appendText("[" + time + "] " + message + "\n");
+    }
+
+    private void updateSummary() {
+        lblSummary.setText(String.format("📊 Tổng yêu cầu đã nhận: %d | Tổng lưu lượng: %s | Địa chỉ IP máy chủ: %s",
+                totalRequests, FileUtils.formatFileSize(totalBytes), localIp));
     }
 
     @Override
     public void onRequestReceived(AccessLog log) {
         Platform.runLater(() -> {
-            logList.add(0, log);
-            if (logList.size() > 500) {
-                logList.remove(logList.size() - 1);
-            }
-            totalRequestsCount++;
-            totalBytesCount += log.getContentLength();
-            updateStatDisplays();
+            totalRequests++;
+            totalBytes += log.getContentLength();
+            updateSummary();
+
+            String desc = switch (log.getStatusCode()) {
+                case 200 -> "200 OK (Thành công)";
+                case 206 -> "206 Partial Content (Tua Video/Nhạc)";
+                case 404 -> "404 Not Found (Không tìm thấy)";
+                default -> log.getStatusCode() + "";
+            };
+
+            appendLog(String.format("👉 [%s] %s %s -> %s | %s",
+                    log.getClientIp(), log.getMethod(), log.getUri(), desc, FileUtils.formatFileSize(log.getContentLength())));
         });
     }
 
@@ -234,18 +152,21 @@ public class ServerController implements Initializable, ServerListener {
     public void onStatusChanged(boolean running, int port, String ip) {
         Platform.runLater(() -> {
             if (running) {
-                lblStatusBadge.setText("🟢 SERVER ONLINE: " + ip + ":" + port);
-                lblStatusBadge.getStyleClass().setAll("badge-online");
+                lblStatusBadge.setText("🟢 ĐANG HOẠT ĐỘNG (" + port + ")");
+                lblStatusBadge.setStyle("-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
             } else {
-                lblStatusBadge.setText("🔴 SERVER STOPPED");
-                lblStatusBadge.getStyleClass().setAll("badge-offline");
+                lblStatusBadge.setText("🔴 MÁY CHỦ ĐANG TẮT");
+                lblStatusBadge.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 12; -fx-background-radius: 12;");
             }
         });
     }
 
     @Override
     public void onServerError(String message) {
-        Platform.runLater(() -> AlertHelper.showError("Lỗi Máy Chủ", message));
+        Platform.runLater(() -> {
+            appendLog("❌ [LỖI]: " + message);
+            AlertHelper.showError("Lỗi Máy Chủ", message);
+        });
     }
 
     public void shutdown() {
