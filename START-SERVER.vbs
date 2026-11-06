@@ -1,2 +1,2 @@
 Set WshShell = CreateObject("WScript.Shell")
-WshShell.Run "START-SERVER.bat", 0, False
+WshShell.Run "CHAY-SERVER.bat", 0, False
