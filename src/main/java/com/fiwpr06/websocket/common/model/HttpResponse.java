@@ -60,14 +60,21 @@ public class HttpResponse {
         out.flush();
 
         if (!headOnly && bodyStream != null && bodyLength > 0) {
-            byte[] buffer = new byte[8192];
-            long bytesRemaining = bodyLength;
-            int read;
-            while (bytesRemaining > 0 && (read = bodyStream.read(buffer, 0, (int) Math.min(buffer.length, bytesRemaining))) != -1) {
-                out.write(buffer, 0, read);
-                bytesRemaining -= read;
+            try (bodyStream) {
+                byte[] buffer = new byte[8192];
+                long bytesRemaining = bodyLength;
+                int read;
+                while (bytesRemaining > 0 && (read = bodyStream.read(buffer, 0, (int) Math.min(buffer.length, bytesRemaining))) != -1) {
+                    out.write(buffer, 0, read);
+                    bytesRemaining -= read;
+                }
+                out.flush();
             }
-            out.flush();
+        } else if (bodyStream != null) {
+            try {
+                bodyStream.close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
