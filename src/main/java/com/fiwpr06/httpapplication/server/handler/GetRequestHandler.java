@@ -22,6 +22,9 @@ public class GetRequestHandler implements HttpRequestHandler {
         if ("/api/status".equalsIgnoreCase(path)) {
             return handleApiStatus();
         }
+        if ("/api/files".equalsIgnoreCase(path)) {
+            return handleApiFiles(request, webRoot);
+        }
         if ("/api/media-info".equalsIgnoreCase(path)) {
             return handleMediaInfo(webRoot);
         }
@@ -140,6 +143,57 @@ public class GetRequestHandler implements HttpRequestHandler {
         HttpResponse res = HttpResponse.ok(json, "application/json; charset=UTF-8");
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         return res;
+    }
+
+    private HttpResponse handleApiFiles(HttpRequest request, File webRoot) {
+        String dirParam = request.getQueryParam("dir");
+        File targetDir = webRoot;
+        String urlPrefix = "/";
+
+        if (dirParam != null && !dirParam.trim().isEmpty()) {
+            targetDir = FileUtils.resolveSafePath(webRoot, dirParam);
+            urlPrefix = "/" + (dirParam.startsWith("/") ? dirParam.substring(1) : dirParam);
+            if (!urlPrefix.endsWith("/")) {
+                urlPrefix += "/";
+            }
+        }
+
+        if (targetDir == null || !targetDir.exists() || !targetDir.isDirectory()) {
+            return HttpResponse.ok("[]", "application/json; charset=UTF-8");
+        }
+
+        File[] files = targetDir.listFiles(f -> f.isFile() && !f.getName().startsWith("."));
+        if (files == null) {
+            files = new File[0];
+        }
+
+        Arrays.sort(files, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+
+        StringBuilder json = new StringBuilder("[");
+        for (int i = 0; i < files.length; i++) {
+            File f = files[i];
+            String name = f.getName();
+            String url = urlPrefix + name;
+            String type = MimeType.getMimeType(name);
+            String sizeText = FileUtils.formatFileSize(f.length());
+
+            if (i > 0) json.append(",");
+            json.append(String.format(
+                "{\"name\":\"%s\",\"size\":%d,\"sizeText\":\"%s\",\"url\":\"%s\",\"mimeType\":\"%s\",\"time\":%d}",
+                escapeJson(name), f.length(), sizeText, escapeJson(url), type, f.lastModified()
+            ));
+        }
+        json.append("]");
+
+        HttpResponse res = HttpResponse.ok(json.toString(), "application/json; charset=UTF-8");
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        return res;
+    }
+
+    private static String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     public HttpResponse renderDirectoryListing(File dir, String requestPath) {

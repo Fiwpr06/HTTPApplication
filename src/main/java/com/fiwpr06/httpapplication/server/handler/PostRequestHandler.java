@@ -74,7 +74,22 @@ public class PostRequestHandler implements HttpRequestHandler {
     }
 
     private HttpResponse handleFileUpload(HttpRequest request, File webRoot) {
-        String fileName = request.getHeader("X-File-Name");
+        String rawFileName = request.getHeader("X-File-Name");
+        if (rawFileName == null || rawFileName.trim().isEmpty()) {
+            rawFileName = request.getQueryParam("name");
+        }
+
+        String fileName = null;
+        if (rawFileName != null && !rawFileName.trim().isEmpty()) {
+            try {
+                fileName = URLDecoder.decode(rawFileName, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                fileName = rawFileName;
+            }
+            // Chống Path Traversal: Chỉ lấy tên tệp, loại bỏ thư mục
+            fileName = new File(fileName).getName();
+        }
+
         if (fileName == null || fileName.trim().isEmpty()) {
             fileName = "upload_" + System.currentTimeMillis() + ".dat";
         }
@@ -104,7 +119,8 @@ public class PostRequestHandler implements HttpRequestHandler {
 
         String json = String.format("""
             {
-              "status": "UPLOAD_SUCCESS",
+              "status": "SUCCESS",
+              "message": "Tải lên tệp thành công!",
               "fileName": "%s",
               "savedPath": "/uploads/%s",
               "fileSize": %d,
@@ -112,6 +128,9 @@ public class PostRequestHandler implements HttpRequestHandler {
             }
             """, fileName, fileName, destFile.length(), DateTimeUtil.formatHttpDate(System.currentTimeMillis()));
 
-        return HttpResponse.ok(json, "application/json; charset=UTF-8");
+        HttpResponse res = HttpResponse.ok(json, "application/json; charset=UTF-8");
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        return res;
     }
 }
