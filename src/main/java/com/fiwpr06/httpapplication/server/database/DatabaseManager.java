@@ -117,16 +117,6 @@ public class DatabaseManager {
                 """);
 
                 stmt.executeUpdate("""
-                    CREATE TABLE IF NOT EXISTS browsing_history (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        title VARCHAR(255) NOT NULL,
-                        url TEXT NOT NULL,
-                        visit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        is_starred TINYINT DEFAULT 0
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-                """);
-
-                stmt.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS uploaded_files (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         file_name VARCHAR(255) NOT NULL,
@@ -148,16 +138,6 @@ public class DatabaseManager {
                         content_length INTEGER NOT NULL,
                         user_agent TEXT,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    );
-                """);
-
-                stmt.executeUpdate("""
-                    CREATE TABLE IF NOT EXISTS browsing_history (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        url TEXT NOT NULL,
-                        visit_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        is_starred INTEGER DEFAULT 0
                     );
                 """);
 

@@ -1,10 +1,8 @@
 package com.fiwpr06.httpapplication;
 
 import com.fiwpr06.httpapplication.common.model.AccessLog;
-import com.fiwpr06.httpapplication.common.model.HistoryItem;
 import com.fiwpr06.httpapplication.server.database.AccessLogDao;
 import com.fiwpr06.httpapplication.server.database.DatabaseManager;
-import com.fiwpr06.httpapplication.server.database.HistoryDao;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -39,14 +37,12 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testBrowsingHistoryPersistence() {
-        HistoryDao dao = new HistoryDao();
-        HistoryItem item = new HistoryItem("Test Page", "http://localhost:8080/test");
-        dao.insertHistory(item);
+    public void testAccessLogStatistics() {
+        AccessLogDao dao = new AccessLogDao();
+        long initialCount = dao.getTotalRequests();
+        dao.insertLog(new AccessLog("192.168.1.100", "GET", "/api/status", 200, 500, "JUnit"));
 
-        List<HistoryItem> list = dao.getAllHistory();
-        assertNotNull(list);
-        assertFalse(list.isEmpty());
-        assertTrue(list.stream().anyMatch(h -> "http://localhost:8080/test".equals(h.getUrl())));
+        assertEquals(initialCount + 1, dao.getTotalRequests());
+        assertTrue(dao.getTotalBytesSent() >= 500);
     }
 }
