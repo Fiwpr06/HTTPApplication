@@ -8,7 +8,7 @@
     <artifactId>HTTPApplication</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>HTTPApplication</name>
-    <description>Lab 4: HTTP Multi-Service Web Server (Java 21 + JavaFX 21 + Socket TCP)</description>
+    <description>MediaHub: Local Media Streaming and Document Server (Java 21 + JavaFX 21 + Socket TCP)</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

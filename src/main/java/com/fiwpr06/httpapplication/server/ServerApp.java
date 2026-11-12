@@ -15,7 +15,7 @@ public class ServerApp extends Application {
         Scene scene = new Scene(loader.load(), 1050, 720);
         controller = loader.getController();
 
-        stage.setTitle("⚡ WebServerPro — HTTP Server Dashboard (Lab 4 LTM)");
+        stage.setTitle("MediaHub — Local Media & Document Server");
         stage.setScene(scene);
         stage.setMinWidth(900);
         stage.setMinHeight(600);

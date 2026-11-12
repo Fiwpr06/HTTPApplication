@@ -1,4 +1,4 @@
-# HTTPApplication — Lab 4: HTTP Multi-Service Web Server (Java 21 + JavaFX 21)
+# MediaHub — Local Media Streaming & Document Server
 
 [![Java 21](https://img.shields.io/badge/Java-21%20LTS-orange.svg)](https://openjdk.org/projects/jdk/21/)
 [![JavaFX 21](https://img.shields.io/badge/JavaFX-21.0.6-blue.svg)](https://openjfx.io/)
@@ -6,62 +6,44 @@
 [![Dual Database](https://img.shields.io/badge/Database-MySQL%20%7C%20SQLite%20Fallback-blue.svg)](#)
 [![Tests](https://img.shields.io/badge/Unit%20Tests-9%2F9%20Passing-brightgreen.svg)](#)
 
-Dự án **HTTPApplication** được xây dựng chuyên biệt theo đúng tiêu chí **Khuyến Khích `(kk)`** trong bảng yêu cầu 5 bài Lab môn Lập trình mạng (LTM) của Giảng viên: **Chỉ tập trung vào Web Server đa dịch vụ**, loại bỏ hoàn toàn các thành phần dư thừa, dễ hiểu 100% khi vấn đáp và chấm điểm.
+**MediaHub** là một máy chủ lưu trữ và truyền thông đa phương tiện hoạt động trong mạng cục bộ (LAN / Wi-Fi). Hoạt động tương tự như một Google Drive kết hợp Spotify mini, MediaHub cho phép người dùng mở đọc trực tiếp tài liệu PDF, stream các bài hát MP3/WAV và clip video MP4 với cơ chế tua phân đoạn (HTTP 206 Range Requests).
 
 ---
 
-## 1. Đáp Ứng Đúng Yêu Cầu & Cách Chấm Của Giảng Viên
+## 🌟 1. Tính Năng Chính Của MediaHub
 
-| Tiêu chí | Đề bài yêu cầu (Lab 4) | Triển khai thực tế trong Dự án | Trạng thái |
-| :--- | :--- | :--- | :---: |
-| **Loại bài làm** | **Web Server(kk)** hoặc Web Client(Browser) | Chọn **Web Server (Khuyến khích `kk`)** | [OK] Đạt chuẩn |
-| **Giao thức** | **Có giao thức HTTP** | Tự xây dựng Server TCP Socket xử lý HTTP/1.1 (RFC 2616 & RFC 7230) | [OK] Đạt 100% |
-| **Cách chấm của Thầy** | **Có hơn 1 dịch vụ của Server (vd: `.pdf` - `.mp3` - `.pm4`...)** | Phục vụ trọn vẹn đúng 3 dịch vụ: **[1] Stream Nhạc MP3**, **[2] Stream Video MP4**, **[3] Xem Tài Liệu PDF** | [OK] Chuẩn 100% |
-| **Trình duyệt kiểm thử** | Tương tự Chrome hoặc Cốc Cốc | Sử dụng chính **Google Chrome / Cốc Cốc / Safari** trên máy tính hoặc điện thoại | [OK] Trực quan |
-| **Cơ sở dữ liệu** | Quản lý dữ liệu | Tự động kết nối **MySQL** (kèm **SQLite fallback** nhúng) lưu Access Logs | [OK] Đạt 100% |
-
----
-
-## 2. Ba Dịch Vụ Mạng Cốt Lõi Trên Máy Chủ
-
-1. **[Dịch Vụ 1] Stream Âm Thanh MP3 (`/media/audio.mp3`)**:
-   - Giao thức: `HTTP 206 Partial Content` (Range Requests RFC 7233).
-   - Nghe nhạc trực tuyến, bấm Play/Pause và tua thanh thời gian bài hát. Máy chủ tự động bóc tách Header `Range: bytes=start-end` và phản hồi đúng đoạn byte âm thanh đó.
-2. **[Dịch Vụ 2] Stream Video MP4 (`/media/video.mp4`)**:
-   - Giao thức: `HTTP 206 Partial Content` (Range Requests).
-   - Phát video MP4 mượt mà, cho phép người dùng nhảy tới bất kỳ mốc thời gian nào trên thanh Seekbar mà không cần tải lại toàn bộ file.
-3. **[Dịch Vụ 3] Xem Tài Liệu PDF Trực Tiếp (`/documents/sample.pdf`)**:
-   - Giao thức: `HTTP 200 OK` với `Content-Type: application/pdf`.
-   - Xem tài liệu, đồ án và giáo trình trực tiếp ngay trong trình duyệt (In-browser viewing).
+| Dịch vụ | Giao thức | Mô tả kỹ thuật |
+| :--- | :--- | :--- |
+| **Stream Âm Thanh** | `HTTP 206 Partial Content` | Phát trực tuyến các tệp nhạc MP3, WAV. Cho phép tua bài hát mượt mà qua cơ chế Byte-Range (RFC 7233). |
+| **Stream Video** | `HTTP 206 Partial Content` | Phát video MP4 trực tiếp trên mọi trình duyệt. Khi nhảy tới một mốc thời gian bất kỳ, máy chủ chỉ gửi đoạn byte tương ứng. |
+| **Xem Tài Liệu PDF** | `HTTP 200 OK` | Đọc tài liệu, sách, báo cáo trực tiếp trong trình duyệt qua MIME `application/pdf` mà không cần cài phần mềm ngoài. |
+| **Tự Động Duyệt Thư Mục** | `Auto Directory Indexing` | Tự động sinh bảng danh mục tệp khi truy cập vào thư mục con (tương tự Apache / Nginx). |
+| **Nhật Ký Truy Cập** | `SQLite / MySQL Dual DB` | Tự động ghi nhận mọi lượt truy cập (IP, Method, URI, Status Code, Bytes) vào cơ sở dữ liệu. |
 
 ---
 
-## 3. Khởi Chạy 1-Click Cực Kỳ Đơn Giản
+## 🚀 2. Khởi Chạy Nhanh 1-Click
 
-* **Cách chạy:** Nhấp đúp chuột vào tệp [`CHAY-SERVER.bat`](CHAY-SERVER.bat) (hoặc [`START.bat`](START.bat)).
+* **Khởi chạy không hiện cửa sổ đen (Khuyên dùng):** Nhấp đúp vào [`CHAY-SERVER.vbs`](CHAY-SERVER.vbs) (hoặc [`START.vbs`](START.vbs)).
+* **Khởi chạy có cửa sổ dòng lệnh:** Nhấp đúp vào [`CHAY-SERVER.bat`](CHAY-SERVER.bat).
 * Bảng điều khiển Server mở lên tại cổng `8080`.
-* Bấm nút **[Mở Trình Duyệt]** trên giao diện Server $\to$ Trình duyệt Chrome/Cốc Cốc sẽ tự động mở trang web máy chủ phục vụ `http://localhost:8080/`.
+* Bấm nút **[Mở Trình Duyệt]** trên giao diện Server $\to$ Trình duyệt tự mở trang chủ `http://localhost:8080/`.
 
 ---
 
-## 4. Hướng Dẫn Kết Nối 2 Thiết Bị (Máy Tính & Điện Thoại Qua Wi-Fi)
+## 📱 3. Kết Nối Điện Thoại Hoặc Máy Tính Khác Qua Wi-Fi
 
-1. **Bước 1:** Kết nối cả máy tính chạy Server và điện thoại vào **chung một mạng Wi-Fi**.
-2. **Bước 2:** Bật Server bằng [`CHAY-SERVER.bat`](CHAY-SERVER.bat) $\to$ Nhìn ô màu xanh lá **LAN**: `http://192.168.x.x:8080/`.
-3. **Bước 3:** Trên điện thoại, mở Safari/Chrome gõ địa chỉ trên.
-4. **Kết quả:** Màn hình Console của Server sẽ in ra dòng log thời gian thực:
-   ```text
-   [STREAM NHAC MP3]   [192.168.1.45] GET /media/audio.mp3     -> 206 Partial Content | 256 KB
-   [STREAM VIDEO MP4]  [192.168.1.45] GET /media/video.mp4     -> 206 Partial Content | 512 KB
-   [XEM TAI LIEU PDF]  [192.168.1.45] GET /documents/sample.pdf -> 200 OK              | 652 B
-   ```
+1. Kết nối máy tính chạy Server và điện thoại vào **chung một mạng Wi-Fi**.
+2. Khởi động MediaHub $\to$ Quan sát ô màu xanh lá **LAN**: `http://192.168.x.x:8080/`.
+3. Trên điện thoại, mở trình duyệt bất kỳ (Safari, Chrome) và gõ địa chỉ trên.
+4. Bạn có thể nghe nhạc, xem phim và đọc tài liệu trực tiếp từ điện thoại.
 
 ---
 
-## 5. Kiểm Thử Tự Động (Automated Tests)
+## 🧪 4. Kiểm Thử Tự Động (Unit Tests)
 
-Chạy kiểm thử đơn vị với JUnit 5:
+Chạy kiểm thử toàn diện với lệnh:
 ```powershell
-cmd /c "cd /d D:\Workspace\Practice\Java\HTTPApplication && mvnw.cmd test"
+cmd /c "cd /d D:\Workspace\Practice\Java\HTTPApplication && .\mvnw.cmd clean test"
 ```
 Kết quả kiểm thử: **9/9 Tests Pass 100% (BUILD SUCCESS)**.

@@ -1,13 +1,13 @@
 @echo off
 chcp 65001 >nul
-title [LAB 4] HTTP MULTI-SERVICE WEB SERVER
+title MEDIAHUB - LOCAL MEDIA AND DOCUMENT SERVER
 cd /d "%~dp0"
 cls
 echo ======================================================================
-echo    MAY CHU HTTP MULTI-SERVICE WEB SERVER (LAB 4 - LTM VKU)
+echo    MEDIAHUB - LOCAL MEDIA AND DOCUMENT SERVER
 echo ======================================================================
-echo    Phuc vu 3 dich vu:
-echo      [1] Stream Nhac MP3     (.mp3 / Range 206)
+echo    Cac dich vu tich hop:
+echo      [1] Stream Nhac MP3/WAV (.mp3, .wav / Range 206)
 echo      [2] Stream Video MP4    (.mp4 / Range 206)
 echo      [3] Xem Tai Lieu PDF    (.pdf / HTTP 200)
 echo.

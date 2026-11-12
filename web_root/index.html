@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP Multi-Service Web Server — Lab 4 LTM</title>
+    <title>MediaHub — Local Media & Document Server</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
                     <line x1="6" y1="6" x2="6.01" y2="6"></line>
                     <line x1="6" y1="18" x2="6.01" y2="18"></line>
                 </svg>
-                <span class="logo-text">Http<span class="highlight">Server</span></span>
+                <span class="logo-text">Media<span class="highlight">Hub</span></span>
                 <span class="badge">HTTP/1.1 Socket</span>
             </div>
             <div style="display: flex; align-items: center; gap: 14px;">
@@ -36,10 +36,10 @@
     <main class="container">
         <!-- Hero Section -->
         <section class="hero">
-            <div class="hero-badge">BÀI TẬP LỚN LAB 4: HTTP WEB SERVER</div>
-            <h1>Hệ Thống Phục Vụ 3 Dịch Vụ Mạng Đa Phương Tiện</h1>
+            <div class="hero-badge">MEDIAHUB PLATFORM &bull; LOCAL MEDIA SERVER</div>
+            <h1>Trung Tâm Lưu Trữ & Truyền Thông Đa Phương Tiện</h1>
             <p class="subtitle">
-                Xây dựng từ TCP Socket thuần túy • Phục vụ Stream Video MP4, Stream Nhạc MP3 bằng HTTP 206 Range Requests và Xem Tài liệu PDF trực tiếp.
+                Xây dựng trên nền tảng Socket TCP thuần túy &bull; Phát trực tuyến Video MP4, Âm thanh MP3 với HTTP 206 Range Requests và Xem Tài liệu PDF trực tiếp trên mạng nội bộ.
             </p>
         </section>
 
@@ -177,7 +177,7 @@
 
         </div>
 
-        <!-- Huong Dan & Giai Thich Ky Thuat HTTP Cho Giang Vien -->
+        <!-- Huong Dan & Giai Thich Ky Thuat HTTP Trong MediaHub -->
         <div class="protocol-banner">
             <h3>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -185,7 +185,7 @@
                     <line x1="12" y1="16" x2="12" y2="12"></line>
                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                Giải thích giao thức mạng HTTP/1.1 trong bài Lab:
+                Co che giao thuc mang HTTP/1.1 trong MediaHub:
             </h3>
             <ul style="margin-left: 20px; margin-top: 6px;">
                 <li><b>Giao thức xem tài liệu PDF:</b> Trình duyệt gửi <code>GET /documents/sample.pdf HTTP/1.1</code>. Server phản hồi <code>HTTP/1.1 200 OK</code> với <code>Content-Type: application/pdf</code> và các Header chống lưu đệm <code>Cache-Control: no-store</code>.</li>

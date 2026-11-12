@@ -67,9 +67,9 @@ public class ServerController implements Initializable, ServerListener {
         totalBytes = logDao.getTotalBytesSent();
         updateSummary();
 
-        appendLog("=== MAY CHU HTTP MULTI-SERVICE (LAB 4 - LTM) SAN SANG ===");
+        appendLog("=== HE THONG MAY CHU MEDIAHUB SAN SANG ===");
         appendLog("Giao dien: Light Modern High-Legibility | Java 21 | CSDL: " + dbType);
-        appendLog("3 Dich vu: [1] Stream Nhac MP3  [2] Stream Video MP4  [3] Xem Tai lieu PDF");
+        appendLog("Dich vu: [1] Stream Nhac MP3/WAV  [2] Stream Video MP4  [3] Xem Tai lieu PDF");
         appendLog("Thu muc web luu tru: " + webRoot.getAbsolutePath());
         appendLog("Dia chi mang LAN (cho thiet bi khac): http://" + localIp + ":8080/");
 
