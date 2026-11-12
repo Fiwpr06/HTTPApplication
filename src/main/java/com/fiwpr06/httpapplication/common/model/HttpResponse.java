@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class HttpResponse {
+public class HttpResponse implements AutoCloseable {
     private final HttpStatus status;
     private final Map<String, String> headers = new LinkedHashMap<>();
     private final InputStream bodyStream;
@@ -23,7 +23,7 @@ public class HttpResponse {
         this.bodyLength = bodyLength;
 
         // Default HTTP headers
-        headers.put("Server", "WebServerPro/1.0 (Java 21)");
+        headers.put("Server", "MediaHub/1.0 (Java 21)");
         headers.put("Date", DateTimeUtil.formatHttpDate(System.currentTimeMillis()));
         headers.put("Connection", "close");
         if (bodyLength >= 0) {
@@ -41,6 +41,20 @@ public class HttpResponse {
 
     public long getBodyLength() {
         return bodyLength;
+    }
+
+    public InputStream getBodyStream() {
+        return bodyStream;
+    }
+
+    @Override
+    public void close() {
+        if (bodyStream != null) {
+            try {
+                bodyStream.close();
+            } catch (IOException ignored) {
+            }
+        }
     }
 
     public HttpResponse setHeader(String name, String value) {
