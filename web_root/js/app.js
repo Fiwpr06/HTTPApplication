@@ -114,6 +114,7 @@ async function selectDocument(url, name) {
     const btnDl = document.getElementById('btnDocDownload');
     const pdfFrame = document.getElementById('pdfFrame');
     const docxContainer = document.getElementById('docxViewerContainer');
+    const previewBody = document.querySelector('.doc-preview-body');
 
     if (titleEl) titleEl.textContent = name;
     if (btnTab) btnTab.href = url;
@@ -122,36 +123,51 @@ async function selectDocument(url, name) {
         btnDl.download = name;
     }
 
+    // Cuộn khung xem tài liệu về đầu trang
+    if (previewBody) {
+        previewBody.scrollTop = 0;
+    }
+
     const lower = name.toLowerCase();
     const isDocx = lower.endsWith('.docx') || lower.endsWith('.doc');
 
     if (isDocx) {
         if (badgeEl) {
             badgeEl.className = 'badge-tag badge-docx';
-            badgeEl.textContent = 'Word Document (DOCX Preview)';
+            badgeEl.textContent = 'Word Document (DOCX High-Fidelity)';
         }
         if (pdfFrame) pdfFrame.style.display = 'none';
         if (docxContainer) {
-            docxContainer.style.display = 'block';
-            docxContainer.innerHTML = '<div class="doc-loading"><span class="spinner"></span> Đang phân tích và hiển thị tài liệu Word (.docx)...</div>';
+            docxContainer.style.display = 'flex';
+            docxContainer.innerHTML = '<div class="doc-loading"><span class="dot-pulse"></span> Đang nạp và định dạng từng trang tài liệu Word (.docx)...</div>';
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('Máy chủ phản hồi HTTP ' + response.status);
+                }
                 const arrayBuffer = await response.arrayBuffer();
-                if (typeof mammoth !== 'undefined') {
-                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-                    docxContainer.innerHTML = `
-                        <div class="docx-paper">
-                            <div class="docx-paper-header">
-                                <span class="badge-tag badge-docx">DOCX PREVIEW</span>
-                                <strong>${name}</strong>
-                            </div>
-                            <div class="docx-body">
-                                ${result.value}
-                            </div>
-                        </div>
-                    `;
+
+                if (window.docx && typeof window.docx.renderAsync === 'function') {
+                    docxContainer.innerHTML = '';
+                    const renderOptions = {
+                        className: 'docx',
+                        inWrapper: true,
+                        ignoreWidth: false,
+                        ignoreHeight: false,
+                        ignoreFonts: false,
+                        breakPages: true,
+                        ignoreLastRenderedPageBreak: false,
+                        experimental: true,
+                        trimXmlDeclaration: true,
+                        useBase64URL: true,
+                        renderHeaders: true,
+                        renderFooters: true,
+                        renderFootnotes: true,
+                        renderEndnotes: true
+                    };
+                    await window.docx.renderAsync(arrayBuffer, docxContainer, null, renderOptions);
                 } else {
-                    docxContainer.innerHTML = '<div class="doc-error">Thư viện mammoth.js chưa sẵn sàng. Bạn có thể bấm [Tải Về Máy] để xem tệp Word này.</div>';
+                    docxContainer.innerHTML = '<div class="doc-error">Thư viện docx-preview chưa sẵn sàng trên trình duyệt. Bạn có thể bấm [Tải Về] để mở tệp.</div>';
                 }
             } catch (err) {
                 docxContainer.innerHTML = `<div class="doc-error">Lỗi khi đọc tài liệu DOCX: ${err.message}</div>`;
