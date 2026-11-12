@@ -14,7 +14,7 @@
 
 | Dịch vụ | Giao thức | Mô tả kỹ thuật |
 | :--- | :--- | :--- |
-| **Xem Tài Liệu PDF & Word** | `HTTP 200 OK` | Đọc tài liệu PDF trực tiếp và chuyển đổi hiển thị tệp Word `.docx` thành trang A4 chuẩn (100% offline bằng Mammoth.js). |
+| **Xem Tài Liệu PDF & Word** | `HTTP 200 OK` | Đọc tài liệu PDF trực tiếp và hiển thị tệp Word `.docx` chuẩn xác 100% style, font chữ, căn lề, bảng biểu theo từng trang A4 (100% offline qua `docx-preview` & `JSZip`, có thanh cuộn nội bộ độc lập). |
 | **Stream Âm Thanh** | `HTTP 206 Partial Content` | Phát trực tuyến danh sách các tệp nhạc MP3, WAV. Cho phép tua bài hát mượt mà qua cơ chế Byte-Range (RFC 7233). |
 | **Stream Video** | `HTTP 206 Partial Content` | Phát video MP4 trực tiếp trên mọi trình duyệt. Khi nhảy tới một mốc thời gian bất kỳ, máy chủ chỉ gửi đoạn byte tương ứng. |
 | **Tự Động Duyệt Thư Mục** | `Auto Directory Indexing` | Tự động sinh bảng danh mục tệp khi truy cập vào thư mục con không có `index.html` (tương tự Apache / Nginx). |
