@@ -2,135 +2,44 @@ package com.fiwpr06.httpapplication.server.handler;
 
 import com.fiwpr06.httpapplication.common.model.HttpRequest;
 import com.fiwpr06.httpapplication.common.model.HttpResponse;
-import com.fiwpr06.httpapplication.common.util.DateTimeUtil;
-import com.fiwpr06.httpapplication.server.database.DatabaseManager;
+import com.fiwpr06.httpapplication.server.service.FileUploadService;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Router điều hướng cho HTTP POST requests.
+ * Áp dụng nguyên lý Single Responsibility (SOLID):
+ * Lớp này chỉ phân luồng, ủy quyền việc lưu trữ file và xử lý form cho {@link FileUploadService}.
+ */
 public class PostRequestHandler implements HttpRequestHandler {
+
+    private final FileUploadService fileUploadService;
+
+    public PostRequestHandler() {
+        this(new FileUploadService());
+    }
+
+    public PostRequestHandler(FileUploadService fileUploadService) {
+        this.fileUploadService = fileUploadService;
+    }
 
     @Override
     public HttpResponse handle(HttpRequest request, File webRoot) {
         String path = request.getPath();
 
-        // 1. Form Submission Endpoint
+        // 1. Endpoint Submit Form ý kiến
         if ("/api/submit".equalsIgnoreCase(path)) {
-            return handleSubmitForm(request);
+            return fileUploadService.handleSubmitForm(request);
         }
 
-        // 2. Direct File Upload Endpoint
+        // 2. Endpoint Upload tệp tin lên máy chủ
         if ("/api/upload".equalsIgnoreCase(path)) {
-            return handleFileUpload(request, webRoot);
+            return fileUploadService.handleUpload(request, webRoot);
         }
 
-        // Default POST Echo
+        // 3. Phản hồi mặc định nếu gửi POST tới endpoint khác
         String body = request.getBodyAsString();
         String responseText = "HTTP POST Received at " + path + "\nLength: " + request.getBody().length + " bytes\nBody: " + body;
         return HttpResponse.ok(responseText, "text/plain; charset=UTF-8");
-    }
-
-    private HttpResponse handleSubmitForm(HttpRequest request) {
-        String body = request.getBodyAsString();
-        Map<String, String> formData = new HashMap<>();
-
-        if (body != null && !body.isEmpty()) {
-            for (String pair : body.split("&")) {
-                if (pair.isEmpty()) continue;
-                String[] kv = pair.split("=", 2);
-                try {
-                    String k = URLDecoder.decode(kv[0], StandardCharsets.UTF_8);
-                    String v = kv.length > 1 ? URLDecoder.decode(kv[1], StandardCharsets.UTF_8) : "";
-                    formData.put(k, v);
-                } catch (Exception ignored) {
-                }
-            }
-        }
-
-        String fullName = formData.getOrDefault("fullName", "Khách ẩn danh");
-        String studentId = formData.getOrDefault("studentId", "N/A");
-        String feedback = formData.getOrDefault("feedback", "");
-
-        String json = String.format("""
-            {
-              "status": "SUCCESS",
-              "message": "Dữ liệu HTTP POST đã được xử lý thành công!",
-              "sinhVien": "%s",
-              "mssv": "%s",
-              "noiDung": "%s",
-              "clientIp": "%s",
-              "receivedAt": "%s"
-            }
-            """, fullName, studentId, feedback, request.getClientIp(), DateTimeUtil.formatHttpDate(System.currentTimeMillis()));
-
-        return HttpResponse.ok(json, "application/json; charset=UTF-8");
-    }
-
-    private HttpResponse handleFileUpload(HttpRequest request, File webRoot) {
-        String rawFileName = request.getHeader("X-File-Name");
-        if (rawFileName == null || rawFileName.trim().isEmpty()) {
-            rawFileName = request.getQueryParam("name");
-        }
-
-        String fileName = null;
-        if (rawFileName != null && !rawFileName.trim().isEmpty()) {
-            try {
-                fileName = URLDecoder.decode(rawFileName, StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                fileName = rawFileName;
-            }
-            // Chống Path Traversal: Chỉ lấy tên tệp, loại bỏ thư mục
-            fileName = new File(fileName).getName();
-        }
-
-        if (fileName == null || fileName.trim().isEmpty()) {
-            fileName = "upload_" + System.currentTimeMillis() + ".dat";
-        }
-
-        File uploadsDir = new File(webRoot, "uploads");
-        if (!uploadsDir.exists()) {
-            uploadsDir.mkdirs();
-        }
-
-        File destFile = new File(uploadsDir, fileName);
-        try (FileOutputStream fos = new FileOutputStream(destFile)) {
-            fos.write(request.getBody());
-        } catch (IOException e) {
-            return HttpResponse.internalError("Cannot save uploaded file: " + e.getMessage());
-        }
-
-        // Record in uploaded_files database table
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO uploaded_files (file_name, file_size, file_type, uploader_ip) VALUES (?, ?, ?, ?)")) {
-            ps.setString(1, fileName);
-            ps.setLong(2, destFile.length());
-            ps.setString(3, request.getHeader("Content-Type"));
-            ps.setString(4, request.getClientIp());
-            ps.executeUpdate();
-        } catch (Exception ignored) {
-        }
-
-        String json = String.format("""
-            {
-              "status": "SUCCESS",
-              "message": "Tải lên tệp thành công!",
-              "fileName": "%s",
-              "savedPath": "/uploads/%s",
-              "fileSize": %d,
-              "uploadedAt": "%s"
-            }
-            """, fileName, fileName, destFile.length(), DateTimeUtil.formatHttpDate(System.currentTimeMillis()));
-
-        HttpResponse res = HttpResponse.ok(json, "application/json; charset=UTF-8");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        return res;
     }
 }
