@@ -233,6 +233,7 @@ public class GetRequestHandler implements HttpRequestHandler {
         sb.append(".badge-audio{background:#ECFDF5;color:#059669;}");
         sb.append(".badge-video{background:#FEF3C7;color:#D97706;}");
         sb.append(".badge-pdf{background:#FEE2E2;color:#DC2626;}");
+        sb.append(".badge-docx{background:#DBEAFE;color:#1D4ED8;}");
         sb.append(".badge-file{background:#F1F5F9;color:#475569;}");
         sb.append(".meta{color:#64748B;font-family:'Consolas',monospace;font-size:12px;}");
         sb.append(".footer{padding:14px 24px;background:#F8FAFC;border-top:1px solid #E2E8F0;font-size:12px;color:#94A3B8;display:flex;justify-content:space-between;}");
@@ -285,6 +286,9 @@ public class GetRequestHandler implements HttpRequestHandler {
                 } else if (lower.endsWith(".pdf")) {
                     tagClass = "badge-pdf";
                     tagText = "PDF";
+                } else if (lower.endsWith(".docx") || lower.endsWith(".doc")) {
+                    tagClass = "badge-docx";
+                    tagText = "DOCX";
                 } else if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
                     tagClass = "badge-audio";
                     tagText = "IMAGE";

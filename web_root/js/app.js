@@ -1,183 +1,322 @@
 // ==========================================================================
-// MEDIAHUB - CLIENT CONTROLLER SCRIPT (LIGHT THEME)
-// Tu dong quet file, cap nhat danh sach phat va xu ly upload qua HTTP POST
+// MEDIAHUB - CLIENT APPLICATION CONTROLLER (REFACTORED MODULAR ARCHITECTURE)
+// Ho tro tab chuyen huong, phat nhac, xem video, xem PDF & Word (.docx)
 // ==========================================================================
 
+let activeTab = 'documents';
 let currentAudioUrl = '';
 let currentVideoUrl = '';
-let currentPdfUrl = '';
+let currentDocUrl = '';
+let documentsData = [];
+let mediaData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    refreshAll();
+    setupTabNavigation();
     setupUploadHandlers();
+    refreshAll();
 });
 
-// 1. Quet toan bo tap tin media va tai lieu tu Server
+// 1. Chuyen doi Tab giao dien (Navigation)
+function setupTabNavigation() {
+    const navButtons = document.querySelectorAll('.nav-tab-btn');
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabName = btn.getAttribute('data-tab');
+            switchTab(tabName);
+        });
+    });
+}
+
+function switchTab(tabName) {
+    activeTab = tabName;
+
+    // Cap nhat active tren thanh Tabs
+    document.querySelectorAll('.nav-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
+    });
+
+    // Cap nhat hien thi panel tuong ung
+    document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'tab-' + tabName);
+    });
+}
+
+// 2. Nap toan bo du lieu tu Server
 async function refreshAll() {
     await Promise.all([
-        loadMediaFiles(),
-        loadDocumentFiles()
+        loadDocuments(),
+        loadMedia()
     ]);
 }
 
-// 2. Nap danh sach audio va video tu /api/files?dir=media
-async function loadMediaFiles() {
-    try {
-        const res = await fetch('/api/files?dir=media&t=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) return;
-        const files = await res.json();
-
-        const selectAudio = document.getElementById('selectAudio');
-        const selectVideo = document.getElementById('selectVideo');
-
-        const audioFiles = files.filter(f => {
-            const n = f.name.toLowerCase();
-            return n.endsWith('.mp3') || n.endsWith('.wav') || n.endsWith('.ogg');
-        });
-
-        const videoFiles = files.filter(f => {
-            const n = f.name.toLowerCase();
-            return n.endsWith('.mp4') || n.endsWith('.webm') || n.endsWith('.mkv');
-        });
-
-        // Cap nhat dropdown Audio
-        if (selectAudio) {
-            selectAudio.innerHTML = '';
-            if (audioFiles.length === 0) {
-                selectAudio.innerHTML = '<option value="">(Khong co file nhac trong media/)</option>';
-            } else {
-                audioFiles.forEach((f, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = f.url;
-                    opt.textContent = `${f.name} (${f.sizeText})`;
-                    selectAudio.appendChild(opt);
-                });
-                if (!currentAudioUrl || !audioFiles.some(f => f.url === currentAudioUrl)) {
-                    changeAudio(audioFiles[0].url, audioFiles[0].name);
-                }
-            }
-        }
-
-        // Cap nhat dropdown Video
-        if (selectVideo) {
-            selectVideo.innerHTML = '';
-            if (videoFiles.length === 0) {
-                selectVideo.innerHTML = '<option value="">(Khong co file video trong media/)</option>';
-            } else {
-                videoFiles.forEach((f, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = f.url;
-                    opt.textContent = `${f.name} (${f.sizeText})`;
-                    selectVideo.appendChild(opt);
-                });
-                if (!currentVideoUrl || !videoFiles.some(f => f.url === currentVideoUrl)) {
-                    changeVideo(videoFiles[0].url, videoFiles[0].name);
-                }
-            }
-        }
-    } catch (e) {
-        console.error('Loi khi tai danh sach media:', e);
-    }
-}
-
-// 3. Nap danh sach tai lieu tu /api/files?dir=documents
-async function loadDocumentFiles() {
+// 3. Quan ly Tai Lieu (PDF, DOCX, TXT)
+async function loadDocuments() {
     try {
         const res = await fetch('/api/files?dir=documents&t=' + Date.now(), { cache: 'no-store' });
         if (!res.ok) return;
-        const files = await res.json();
+        documentsData = await res.json();
 
-        const selectPdf = document.getElementById('selectPdf');
-        const pdfFiles = files.filter(f => f.name.toLowerCase().endsWith('.pdf'));
+        renderDocumentList();
 
-        if (selectPdf) {
-            selectPdf.innerHTML = '';
-            if (pdfFiles.length === 0) {
-                selectPdf.innerHTML = '<option value="">(Khong co tai lieu PDF trong documents/)</option>';
-            } else {
-                pdfFiles.forEach(f => {
-                    const opt = document.createElement('option');
-                    opt.value = f.url;
-                    opt.textContent = `${f.name} (${f.sizeText})`;
-                    selectPdf.appendChild(opt);
-                });
-                if (!currentPdfUrl || !pdfFiles.some(f => f.url === currentPdfUrl)) {
-                    changePdf(pdfFiles[0].url, pdfFiles[0].name);
-                }
-            }
+        // Chon mac dinh tai lieu dau tien neu chua chon
+        if (documentsData.length > 0 && (!currentDocUrl || !documentsData.some(d => d.url === currentDocUrl))) {
+            selectDocument(documentsData[0].url, documentsData[0].name);
         }
     } catch (e) {
         console.error('Loi khi tai danh sach tai lieu:', e);
     }
 }
 
-// 4. Chuyen doi bai hat duoc chon
-function changeAudio(url, name) {
-    if (!url) return;
+function renderDocumentList(filterText = '') {
+    const listContainer = document.getElementById('docListContainer');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '';
+    const filtered = documentsData.filter(d => d.name.toLowerCase().includes(filterText.toLowerCase()));
+
+    if (filtered.length === 0) {
+        listContainer.innerHTML = '<div class="empty-state">Khong tim thay tai lieu phu hop.</div>';
+        return;
+    }
+
+    filtered.forEach(doc => {
+        const isDocx = doc.name.toLowerCase().endsWith('.docx') || doc.name.toLowerCase().endsWith('.doc');
+        const isPdf = doc.name.toLowerCase().endsWith('.pdf');
+        const badgeClass = isDocx ? 'badge-docx' : (isPdf ? 'badge-pdf' : 'badge-file');
+        const badgeText = isDocx ? 'DOCX' : (isPdf ? 'PDF' : 'DOC');
+
+        const item = document.createElement('div');
+        item.className = 'doc-list-item' + (doc.url === currentDocUrl ? ' active' : '');
+        item.onclick = () => selectDocument(doc.url, doc.name);
+
+        item.innerHTML = `
+            <div class="doc-item-badge ${badgeClass}">${badgeText}</div>
+            <div class="doc-item-info">
+                <div class="doc-item-name" title="${doc.name}">${doc.name}</div>
+                <div class="doc-item-meta">${doc.sizeText}</div>
+            </div>
+        `;
+        listContainer.appendChild(item);
+    });
+}
+
+function filterDocuments(keyword) {
+    renderDocumentList(keyword);
+}
+
+async function selectDocument(url, name) {
+    currentDocUrl = url;
+    renderDocumentList();
+
+    const titleEl = document.getElementById('selectedDocTitle');
+    const badgeEl = document.getElementById('selectedDocBadge');
+    const btnTab = document.getElementById('btnDocTab');
+    const btnDl = document.getElementById('btnDocDownload');
+    const pdfFrame = document.getElementById('pdfFrame');
+    const docxContainer = document.getElementById('docxViewerContainer');
+
+    if (titleEl) titleEl.textContent = name;
+    if (btnTab) btnTab.href = url;
+    if (btnDl) {
+        btnDl.href = url;
+        btnDl.download = name;
+    }
+
+    const lower = name.toLowerCase();
+    const isDocx = lower.endsWith('.docx') || lower.endsWith('.doc');
+
+    if (isDocx) {
+        if (badgeEl) {
+            badgeEl.className = 'badge-tag badge-docx';
+            badgeEl.textContent = 'Word Document (DOCX Preview)';
+        }
+        if (pdfFrame) pdfFrame.style.display = 'none';
+        if (docxContainer) {
+            docxContainer.style.display = 'block';
+            docxContainer.innerHTML = '<div class="doc-loading"><span class="spinner"></span> Đang phân tích và hiển thị tài liệu Word (.docx)...</div>';
+            try {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                if (typeof mammoth !== 'undefined') {
+                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                    docxContainer.innerHTML = `
+                        <div class="docx-paper">
+                            <div class="docx-paper-header">
+                                <span class="badge-tag badge-docx">DOCX PREVIEW</span>
+                                <strong>${name}</strong>
+                            </div>
+                            <div class="docx-body">
+                                ${result.value}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    docxContainer.innerHTML = '<div class="doc-error">Thư viện mammoth.js chưa sẵn sàng. Bạn có thể bấm [Tải Về Máy] để xem tệp Word này.</div>';
+                }
+            } catch (err) {
+                docxContainer.innerHTML = `<div class="doc-error">Lỗi khi đọc tài liệu DOCX: ${err.message}</div>`;
+            }
+        }
+    } else {
+        // PDF hoac dinh dang khac
+        if (badgeEl) {
+            badgeEl.className = 'badge-tag badge-pdf';
+            badgeEl.textContent = 'Adobe PDF (Native Embed)';
+        }
+        if (docxContainer) docxContainer.style.display = 'none';
+        if (pdfFrame) {
+            pdfFrame.style.display = 'block';
+            pdfFrame.src = url + '?t=' + Date.now() + '#toolbar=1';
+        }
+    }
+}
+
+// 4. Quan ly Âm Nhạc (Audio Player & Playlist)
+async function loadMedia() {
+    try {
+        const res = await fetch('/api/files?dir=media&t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        mediaData = await res.json();
+
+        renderAudioPlaylist();
+        renderVideoGallery();
+    } catch (e) {
+        console.error('Loi khi tai media:', e);
+    }
+}
+
+function renderAudioPlaylist() {
+    const audioFiles = mediaData.filter(f => {
+        const n = f.name.toLowerCase();
+        return n.endsWith('.mp3') || n.endsWith('.wav') || n.endsWith('.ogg');
+    });
+
+    const tbody = document.getElementById('audioPlaylistTbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    if (audioFiles.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Khong co file nhac trong media/</td></tr>';
+        return;
+    }
+
+    audioFiles.forEach((f, idx) => {
+        const tr = document.createElement('tr');
+        const isCurrent = f.url === currentAudioUrl;
+        if (isCurrent) tr.className = 'playing-row';
+
+        tr.innerHTML = `
+            <td style="width: 40px; text-align: center;">${idx + 1}</td>
+            <td>
+                <div style="font-weight: 600; color: #1E3A8A;">${f.name}</div>
+                <div style="font-size: 11.5px; color: #64748B;">HTTP 206 Partial Content</div>
+            </td>
+            <td><span class="badge-tag badge-audio">${f.name.split('.').pop().toUpperCase()}</span></td>
+            <td style="font-family: monospace;">${f.sizeText}</td>
+            <td style="text-align: right;">
+                <button class="btn-sm btn-green" onclick="playAudio('${f.url}', '${f.name}')">
+                    ${isCurrent ? 'Đang Phát' : '▶ Phát'}
+                </button>
+                <a href="${f.url}" download="${f.name}" class="btn-sm btn-slate" style="text-decoration:none;">Tải Về</a>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (audioFiles.length > 0 && (!currentAudioUrl || !audioFiles.some(f => f.url === currentAudioUrl))) {
+        playAudio(audioFiles[0].url, audioFiles[0].name, false);
+    }
+}
+
+function playAudio(url, name, autoStart = true) {
     currentAudioUrl = url;
+    renderAudioPlaylist();
+
     const player = document.getElementById('audioPlayer');
-    const lbl = document.getElementById('lblAudioName');
+    const lbl = document.getElementById('lblAudioPlayingName');
     const btnTab = document.getElementById('btnAudioTab');
     const btnDl = document.getElementById('btnAudioDownload');
 
-    if (lbl) lbl.textContent = name || url.split('/').pop();
+    if (lbl) lbl.textContent = name;
     if (player) {
-        player.src = url + '?t=' + Date.now();
-        player.load();
+        player.src = url;
+        if (autoStart) {
+            player.play().catch(() => {});
+        }
     }
     if (btnTab) btnTab.href = url;
     if (btnDl) {
         btnDl.href = url;
-        btnDl.download = name || 'audio.mp3';
+        btnDl.download = name;
     }
 }
 
-// 5. Chuyen doi video duoc chon
-function changeVideo(url, name) {
-    if (!url) return;
+// 5. Quan ly Video (Cinema Player & Grid)
+function renderVideoGallery() {
+    const videoFiles = mediaData.filter(f => {
+        const n = f.name.toLowerCase();
+        return n.endsWith('.mp4') || n.endsWith('.webm') || n.endsWith('.mkv');
+    });
+
+    const grid = document.getElementById('videoGalleryGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    if (videoFiles.length === 0) {
+        grid.innerHTML = '<div class="empty-state">Khong co file video trong media/</div>';
+        return;
+    }
+
+    videoFiles.forEach(v => {
+        const card = document.createElement('div');
+        const isCurrent = v.url === currentVideoUrl;
+        card.className = 'video-card' + (isCurrent ? ' active' : '');
+        card.onclick = () => playVideo(v.url, v.name);
+
+        card.innerHTML = `
+            <div class="video-card-thumb">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </div>
+            <div class="video-card-body">
+                <div class="video-card-title">${v.name}</div>
+                <div class="video-card-meta">${v.sizeText} &bull; HTTP 206 Range</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    if (videoFiles.length > 0 && (!currentVideoUrl || !videoFiles.some(f => f.url === currentVideoUrl))) {
+        playVideo(videoFiles[0].url, videoFiles[0].name);
+    }
+}
+
+function playVideo(url, name) {
     currentVideoUrl = url;
+    renderVideoGallery();
+
     const player = document.getElementById('videoPlayer');
-    const lbl = document.getElementById('lblVideoName');
+    const lbl = document.getElementById('lblVideoPlayingName');
     const btnTab = document.getElementById('btnVideoTab');
     const btnDl = document.getElementById('btnVideoDownload');
 
-    if (lbl) lbl.textContent = name || url.split('/').pop();
+    if (lbl) lbl.textContent = name;
     if (player) {
-        player.src = url + '?t=' + Date.now();
+        player.src = url;
         player.load();
     }
     if (btnTab) btnTab.href = url;
     if (btnDl) {
         btnDl.href = url;
-        btnDl.download = name || 'video.mp4';
+        btnDl.download = name;
     }
 }
 
-// 6. Chuyen doi tai lieu PDF duoc chon
-function changePdf(url, name) {
-    if (!url) return;
-    currentPdfUrl = url;
-    const frame = document.getElementById('pdfFrame');
-    const lbl = document.getElementById('lblPdfName');
-    const btnTab = document.getElementById('btnPdfTab');
-    const btnDl = document.getElementById('btnPdfDownload');
-
-    if (lbl) lbl.textContent = name || url.split('/').pop();
-    if (frame) {
-        frame.src = url + '?t=' + Date.now() + '#toolbar=0';
-    }
-    if (btnTab) btnTab.href = url;
-    if (btnDl) {
-        btnDl.href = url;
-        btnDl.download = name || 'sample.pdf';
-    }
-}
-
-// 7. Xu ly Upload tep tin qua HTTP POST
+// 6. Xu ly Upload tep tin qua HTTP POST
 function setupUploadHandlers() {
     const fileInput = document.getElementById('fileUploadInput');
     const dropZone = document.getElementById('uploadDropZone');
-    const statusBox = document.getElementById('uploadStatus');
 
     if (fileInput) {
         fileInput.addEventListener('change', () => {
@@ -229,7 +368,7 @@ async function performUpload(file) {
             statusBox.textContent = `[THANH CONG] Da luu: ${data.fileName} vao thu muc uploads/!`;
             setTimeout(() => {
                 refreshAll();
-            }, 500);
+            }, 600);
         } else {
             statusBox.className = 'upload-status upload-error';
             statusBox.textContent = `[THAT BAI] Ma loi HTTP ${response.status}`;

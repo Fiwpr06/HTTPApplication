@@ -26,6 +26,10 @@ public class MimeType {
 
         // Media & Documents
         EXT_TO_MIME.put("pdf", "application/pdf");
+        EXT_TO_MIME.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        EXT_TO_MIME.put("doc", "application/msword");
+        EXT_TO_MIME.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        EXT_TO_MIME.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
         EXT_TO_MIME.put("mp3", "audio/mpeg");
         EXT_TO_MIME.put("wav", "audio/wav");
         EXT_TO_MIME.put("ogg", "audio/ogg");

@@ -15,6 +15,8 @@ public class MimeTypeTest {
         assertEquals("video/mp4", MimeType.getMimeType("movie.mp4"));
         assertEquals("audio/mpeg", MimeType.getMimeType("song.mp3"));
         assertEquals("application/pdf", MimeType.getMimeType("document.pdf"));
+        assertEquals("application/vnd.openxmlformats-officedocument.wordprocessingml.document", MimeType.getMimeType("report.docx"));
+        assertEquals("application/msword", MimeType.getMimeType("letter.doc"));
         assertEquals("image/png", MimeType.getMimeType("logo.png"));
         assertEquals("application/zip", MimeType.getMimeType("archive.zip"));
         assertEquals("application/octet-stream", MimeType.getMimeType("unknown_file"));

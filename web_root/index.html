@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaHub — Local Media & Document Server</title>
+    <title>MediaHub — Local Media &amp; Document Server</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -34,219 +34,228 @@
     </header>
 
     <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-badge">MEDIAHUB PLATFORM &bull; LOCAL MEDIA SERVER</div>
-            <h1>Trung Tâm Lưu Trữ &amp; Truyền Thông Đa Phương Tiện</h1>
-            <p class="subtitle">
-                Xây dựng trên nền tảng Socket TCP thuần túy &bull; Phát trực tuyến Video MP4, Âm thanh MP3 với HTTP 206 Range Requests và Xem Tài liệu PDF trực tiếp trên mạng nội bộ.
-            </p>
+
+        <!-- App Tab Navigation Bar (Phan he ro rang, khong don chung 1 trang) -->
+        <nav class="nav-tab-bar">
+            <button class="nav-tab-btn active" data-tab="documents">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Tài Liệu (PDF &amp; Word DOCX)
+            </button>
+            <button class="nav-tab-btn" data-tab="music">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                Âm Nhạc (Audio Player)
+            </button>
+            <button class="nav-tab-btn" data-tab="video">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                Phim &amp; Video (Cinema Stream)
+            </button>
+            <button class="nav-tab-btn" data-tab="explorer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                Duyệt Thư Mục (Explorer)
+            </button>
+            <button class="nav-tab-btn" data-tab="upload">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Tải Lên Tệp (Upload)
+            </button>
+        </nav>
+
+        <!-- ==========================================================================
+             TAB 1: TAI LIEU SO (PDF & WORD DOCX) - DUAL PANE GOOGLE DRIVE STYLE
+             ========================================================================== -->
+        <section id="tab-documents" class="tab-panel active">
+            <div class="doc-workspace">
+                <!-- Left Sidebar: Danh sach tai lieu -->
+                <div class="doc-sidebar">
+                    <div class="doc-sidebar-header">
+                        <h3>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            Tài Liệu Trong documents/
+                        </h3>
+                        <input type="text" class="doc-search-input" placeholder="Tìm kiếm tài liệu..." oninput="filterDocuments(this.value)">
+                    </div>
+                    <div id="docListContainer" class="doc-list-container">
+                        <div class="empty-state">Đang tải danh sách tài liệu...</div>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Khung doc tai lieu (PDF Frame hoac Word DOCX Paper) -->
+                <div class="doc-preview-pane">
+                    <div class="doc-preview-header">
+                        <div class="doc-preview-title">
+                            <span id="selectedDocTitle">Đang tải tài liệu...</span>
+                            <span id="selectedDocBadge" class="badge-tag badge-pdf">PDF</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a id="btnDocTab" href="#" target="_blank" class="btn-action btn-blue">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                Mở Tab Mới
+                            </a>
+                            <a id="btnDocDownload" href="#" download class="btn-action btn-slate">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                Tải Về
+                            </a>
+                        </div>
+                    </div>
+                    <div class="doc-preview-body">
+                        <!-- PDF Native Frame -->
+                        <iframe id="pdfFrame" class="pdf-frame-viewer" src=""></iframe>
+
+                        <!-- Word DOCX A4 Paper Container -->
+                        <div id="docxViewerContainer" style="display: none; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Danh muc 3 Dich Vu Cot Loi (White Cards) -->
-        <div class="service-container">
-
-            <!-- DICH VU 1: STREAM NHAC MP3/WAV -->
-            <div class="service-card">
-                <div>
-                    <div class="service-header">
-                        <div class="service-icon green">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 18V5l12-2v13"></path>
-                                <circle cx="6" cy="18" r="3"></circle>
-                                <circle cx="18" cy="16" r="3"></circle>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="service-title">Dịch Vụ 1: Stream Nhạc MP3 / WAV</div>
-                            <span class="service-badge badge-range">HTTP 206 Partial Content</span>
-                        </div>
+        <!-- ==========================================================================
+             TAB 2: AM NHAC (AUDIO STREAMER & PLAYLIST) - SPOTIFY STYLE
+             ========================================================================== -->
+        <section id="tab-music" class="tab-panel">
+            <div class="music-workspace">
+                <!-- Now Playing Card -->
+                <div class="audio-hero-card">
+                    <div class="audio-art">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
                     </div>
-                    <p class="service-desc">
-                        Nghe nhạc trực tuyến chất lượng cao với cơ chế byte-range. Khi tua bài hát, trình duyệt chỉ yêu cầu đoạn byte cần nghe mà không phải tải lại toàn bộ.
-                    </p>
-
-                    <label style="font-size: 11.5px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Chọn bài hát trong thư mục:</label>
-                    <select id="selectAudio" class="form-select" onchange="changeAudio(this.value, this.options[this.selectedIndex].text)"></select>
-
-                    <div class="active-file-indicator">
-                        <span>Đang phát:</span>
-                        <span id="lblAudioName">Đang tải...</span>
-                    </div>
-
-                    <div class="media-player-box">
-                        <audio id="audioPlayer" controls preload="metadata">
-                            <source id="audioSource" src="" type="audio/mpeg">
-                            Trình duyệt không hỗ trợ audio.
+                    <div class="audio-hero-info">
+                        <div style="font-size: 11.5px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.5px;">
+                            ĐANG PHÁT &bull; HTTP 206 RANGE
+                        </div>
+                        <div id="lblAudioPlayingName" class="audio-hero-title">Chưa chọn bài hát</div>
+                        <audio id="audioPlayer" controls class="custom-audio-player">
+                            <source src="" type="audio/mpeg">
+                            Trình duyệt không hỗ trợ Audio.
                         </audio>
                     </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <a id="btnAudioTab" href="#" target="_blank" class="btn-action btn-green">Mở Tab Riêng</a>
+                        <a id="btnAudioDownload" href="#" download class="btn-action btn-slate">Tải Bài Hát</a>
+                    </div>
                 </div>
-                <div class="btn-group">
-                    <a id="btnAudioTab" href="#" target="_blank" class="btn-action btn-green">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        Mở Tab Nhạc
-                    </a>
-                    <a id="btnAudioDownload" href="#" download class="btn-action btn-slate">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Tải File
-                    </a>
+
+                <!-- Playlist Table -->
+                <div class="table-card">
+                    <div class="table-header-title">Danh Sách Bài Hát Trong Thư Mục media/</div>
+                    <table class="app-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px; text-align: center;">#</th>
+                                <th>Tên Bài Hát</th>
+                                <th>Định Dạng</th>
+                                <th>Dung Lượng</th>
+                                <th style="text-align: right;">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audioPlaylistTbody">
+                            <tr><td colspan="5" class="empty-state">Đang tải danh sách bài hát...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </section>
 
-            <!-- DICH VU 2: STREAM VIDEO MP4 -->
-            <div class="service-card">
-                <div>
-                    <div class="service-header">
-                        <div class="service-icon green">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                            </svg>
-                        </div>
+        <!-- ==========================================================================
+             TAB 3: VIDEO (CINEMA STREAM & GALLERY) - YOUTUBE STYLE
+             ========================================================================== -->
+        <section id="tab-video" class="tab-panel">
+            <div class="video-workspace">
+                <!-- Cinema Box -->
+                <div class="cinema-box">
+                    <video id="videoPlayer" controls class="cinema-player">
+                        <source src="" type="video/mp4">
+                        Trình duyệt không hỗ trợ Video.
+                    </video>
+                    <div class="cinema-bar">
                         <div>
-                            <div class="service-title">Dịch Vụ 2: Stream Video MP4</div>
-                            <span class="service-badge badge-range">HTTP 206 Range Request</span>
+                            <div id="lblVideoPlayingName" style="font-size: 15px; font-weight: 700; color: #1E3A8A;">Chưa chọn video</div>
+                            <div style="font-size: 12px; color: #64748B;">Hỗ trợ nhảy tới mốc thời gian bất kỳ qua HTTP 206 Range</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a id="btnVideoTab" href="#" target="_blank" class="btn-action btn-green">Toàn Màn Hình</a>
+                            <a id="btnVideoDownload" href="#" download class="btn-action btn-slate">Tải Video</a>
                         </div>
                     </div>
-                    <p class="service-desc">
-                        Phát video MP4 trực tiếp, hỗ trợ nhảy tới bất kỳ mốc thời gian nào trên thanh Seekbar. Máy chủ tự động bóc tách Header Range và phản hồi từng phân đoạn nhị phân.
-                    </p>
-
-                    <label style="font-size: 11.5px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Chọn video trong thư mục:</label>
-                    <select id="selectVideo" class="form-select" onchange="changeVideo(this.value, this.options[this.selectedIndex].text)"></select>
-
-                    <div class="active-file-indicator">
-                        <span>Đang phát:</span>
-                        <span id="lblVideoName">Đang tải...</span>
-                    </div>
-
-                    <div class="media-player-box">
-                        <video id="videoPlayer" controls preload="metadata" style="max-height: 140px; background: #0F172A;">
-                            <source id="videoSource" src="" type="video/mp4">
-                            Trình duyệt không hỗ trợ video.
-                        </video>
-                    </div>
                 </div>
-                <div class="btn-group">
-                    <a id="btnVideoTab" href="#" target="_blank" class="btn-action btn-green">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        Mở Video Riêng
-                    </a>
-                    <a id="btnVideoDownload" href="#" download class="btn-action btn-slate">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Tải Video
-                    </a>
+
+                <!-- Video Grid -->
+                <div class="table-card" style="padding: 20px;">
+                    <div class="table-header-title" style="padding: 0 0 14px 0; margin-bottom: 14px;">Tất Cả Video Trong media/</div>
+                    <div id="videoGalleryGrid" class="video-grid">
+                        <div class="empty-state">Đang tải danh sách video...</div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- DICH VU 3: XEM TAI LIEU PDF -->
-            <div class="service-card">
-                <div>
-                    <div class="service-header">
-                        <div class="service-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="service-title">Dịch Vụ 3: Xem Tài Liệu PDF</div>
-                            <span class="service-badge badge-full">HTTP 200 OK &bull; MIME Application/PDF</span>
-                        </div>
-                    </div>
-                    <p class="service-desc">
-                        Xem tài liệu báo cáo và giáo trình trực tiếp ngay trên trình duyệt mà không cần cài thêm phần mềm đọc PDF ngoài.
-                    </p>
-
-                    <label style="font-size: 11.5px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Chọn tài liệu PDF:</label>
-                    <select id="selectPdf" class="form-select" onchange="changePdf(this.value, this.options[this.selectedIndex].text)"></select>
-
-                    <div class="active-file-indicator">
-                        <span>Tài liệu:</span>
-                        <span id="lblPdfName">Đang tải...</span>
-                    </div>
-
-                    <div class="media-player-box" style="padding: 2px;">
-                        <iframe id="pdfFrame" src="" class="pdf-preview"></iframe>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <a id="btnPdfTab" href="#" target="_blank" class="btn-action btn-blue">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Mở Toàn Màn Hình
-                    </a>
-                    <a id="btnPdfDownload" href="#" download class="btn-action btn-slate">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Tải Tài Liệu
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Tinh Nang Bo Sung: Upload Qua Mang & Duyet Cay Thu Muc -->
-        <div class="secondary-grid">
-
-            <!-- DICH VU 4: UPLOAD TEP TIN QUA HTTP POST -->
-            <div class="feature-card">
-                <div class="feature-header">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
+        <!-- ==========================================================================
+             TAB 4: DUYET THU MUC (AUTO DIRECTORY EXPLORER)
+             ========================================================================== -->
+        <section id="tab-explorer" class="tab-panel">
+            <div class="explorer-cards-grid">
+                <a href="/documents/" target="_blank" class="explorer-tile">
+                    <div class="explorer-tile-icon">📄</div>
                     <div>
-                        <h3>Dịch Vụ 4: Tải Lên Tệp Tin (HTTP POST)</h3>
+                        <div class="explorer-tile-title">Thư Mục /documents/</div>
+                        <div class="explorer-tile-desc">Xem toàn bộ tệp PDF, DOCX, TXT</div>
                     </div>
-                </div>
-                <p style="font-size: 12.5px; color: #475569; margin-bottom: 12px;">
-                    Tải tệp từ điện thoại hoặc trình duyệt lên thư mục <code>uploads/</code> của máy chủ qua luồng nhị phân HTTP POST.
+                </a>
+                <a href="/media/" target="_blank" class="explorer-tile">
+                    <div class="explorer-tile-icon">🎵</div>
+                    <div>
+                        <div class="explorer-tile-title">Thư Mục /media/</div>
+                        <div class="explorer-tile-desc">Xem toàn bộ tệp MP3, WAV, MP4</div>
+                    </div>
+                </a>
+                <a href="/downloads/" target="_blank" class="explorer-tile">
+                    <div class="explorer-tile-icon">📦</div>
+                    <div>
+                        <div class="explorer-tile-title">Thư Mục /downloads/</div>
+                        <div class="explorer-tile-desc">Xem tệp nén ZIP, RAR, cài đặt</div>
+                    </div>
+                </a>
+                <a href="/uploads/" target="_blank" class="explorer-tile">
+                    <div class="explorer-tile-icon">☁️</div>
+                    <div>
+                        <div class="explorer-tile-title">Thư Mục /uploads/</div>
+                        <div class="explorer-tile-desc">Xem các tệp người dùng vừa tải lên</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="table-card" style="padding: 24px;">
+                <div class="table-header-title" style="padding: 0 0 14px 0; margin-bottom: 14px;">Tính Năng Auto Directory Indexing (Chuẩn Apache)</div>
+                <p style="font-size: 13.5px; color: #475569; line-height: 1.7;">
+                    Khi người dùng truy cập vào bất kỳ đường dẫn thư mục nào trên máy chủ mà không có tệp <code>index.html</code>, máy chủ <b>MediaHub</b> sẽ tự động phân tích và sinh ra trang bảng danh mục tệp tin thời gian thực với đầy đủ icon nhận diện, dung lượng định dạng chuẩn và ngày giờ sửa đổi mới nhất.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             TAB 5: UPLOAD CENTER
+             ========================================================================== -->
+        <section id="tab-upload" class="tab-panel">
+            <div class="upload-center-card">
+                <h2 style="font-size: 18px; color: #1E3A8A; margin-bottom: 6px;">Tải Lên Tệp Mới Vào Máy Chủ</h2>
+                <p style="font-size: 13px; color: #64748B; margin-bottom: 24px;">
+                    Hỗ trợ tải tệp âm thanh (.mp3, .wav), video (.mp4), tài liệu (.pdf, .docx) trực tiếp từ trình duyệt qua HTTP POST.
                 </p>
 
                 <div class="upload-dropzone" id="uploadDropZone" onclick="document.getElementById('fileUploadInput').click()">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
                         <path d="M12 12v9"></path>
                         <path d="m16 16-4-4-4 4"></path>
                     </svg>
-                    <p><b>Nhấp để chọn tệp</b> hoặc kéo thả tệp vào đây</p>
+                    <p style="font-size: 14px; font-weight: 600; color: #1E3A8A; margin: 10px 0 4px;">Kéo thả tệp vào đây hoặc nhấp chuột để chọn tệp</p>
+                    <p style="font-size: 12px; color: #94A3B8;">Máy chủ sẽ tự động lưu vào thư mục <code>uploads/</code></p>
                     <input type="file" id="fileUploadInput" style="display: none;">
                 </div>
                 <div id="uploadStatus" class="upload-status"></div>
             </div>
-
-            <!-- DICH VU 5: DUYET CAY THU MUC TU DONG -->
-            <div class="feature-card">
-                <div class="feature-header">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <div>
-                        <h3>Dịch Vụ 5: Khám Phá Thư Mục (Auto Indexing)</h3>
-                    </div>
-                </div>
-                <p style="font-size: 12.5px; color: #475569; margin-bottom: 12px;">
-                    Trải nghiệm tính năng tự động sinh trang mục lục tệp tin (tương tự Apache / Nginx) khi truy cập các thư mục con:
-                </p>
-                <div class="explorer-grid">
-                    <a href="/media/" target="_blank" class="explorer-link">
-                        📁 Thư mục /media/
-                    </a>
-                    <a href="/documents/" target="_blank" class="explorer-link">
-                        📁 Thư mục /documents/
-                    </a>
-                    <a href="/downloads/" target="_blank" class="explorer-link">
-                        📁 Thư mục /downloads/
-                    </a>
-                    <a href="/uploads/" target="_blank" class="explorer-link">
-                        📁 Thư mục /uploads/
-                    </a>
-                </div>
-            </div>
-
-        </div>
+        </section>
 
         <!-- Co che ky thuat HTTP trong MediaHub -->
         <div class="protocol-banner">
@@ -258,15 +267,17 @@
                 </svg>
                 Cơ chế giao thức mạng HTTP/1.1 trong MediaHub:
             </h3>
-            <ul style="margin-left: 20px; margin-top: 6px;">
-                <li><b>Giao thức xem tài liệu PDF:</b> Trình duyệt gửi <code>GET /documents/... HTTP/1.1</code>. Server phản hồi <code>HTTP/1.1 200 OK</code> với <code>Content-Type: application/pdf</code> và các Header chống lưu đệm <code>Cache-Control: no-store</code>.</li>
-                <li><b>Giao thức Stream MP3 &amp; MP4 (Tua thời gian):</b> Khi tua, trình duyệt gửi Header <code>Range: bytes=start-end</code>. Server Socket cắt đúng lát nhị phân từ file và phản hồi mã trạng thái <code>HTTP/1.1 206 Partial Content</code> kèm Header <code>Content-Range</code>.</li>
+            <ul style="margin-left: 20px; margin-top: 6px; line-height: 1.8;">
+                <li><b>Xem tài liệu PDF &amp; Word (.docx):</b> Trình duyệt gửi <code>GET /documents/... HTTP/1.1</code>. Server phản hồi <code>HTTP 200 OK</code> với MIME chuẩn. Với tệp Word (.docx), máy chủ truyền luồng byte và trình duyệt phân tích hiển thị trực tiếp dạng trang in A4.</li>
+                <li><b>Stream MP3 &amp; MP4 (Tua seekbar):</b> Khi tua, trình duyệt gửi Header <code>Range: bytes=start-end</code>. Máy chủ phản hồi mã trạng thái <code>HTTP 206 Partial Content</code> kèm Header <code>Content-Range</code>.</li>
                 <li><b>Tự động duyệt danh mục (Auto Indexing):</b> Khi vào thư mục không có <code>index.html</code>, máy chủ tự render bảng danh sách file tương tự Apache.</li>
                 <li><b>Tải lên qua HTTP POST:</b> Trình duyệt gửi luồng byte kèm tiêu đề <code>X-File-Name</code>, máy chủ lưu tệp và ghi log vào CSDL SQLite.</li>
             </ul>
         </div>
     </main>
 
+    <!-- Scripts: Thu vien mammoth docx va ung dung app.js -->
+    <script src="/js/mammoth.browser.min.js"></script>
     <script src="/js/app.js"></script>
 </body>
 </html>
