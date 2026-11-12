@@ -14,6 +14,7 @@ module com.fiwpr06.httpapplication {
     exports com.fiwpr06.httpapplication.server.database;
     exports com.fiwpr06.httpapplication.server.core;
     exports com.fiwpr06.httpapplication.server.handler;
+    exports com.fiwpr06.httpapplication.server.service;
     exports com.fiwpr06.httpapplication.server;
     exports com.fiwpr06.httpapplication.server.controller;
 }
