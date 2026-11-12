@@ -99,29 +99,51 @@ public class HttpResponse {
         return res;
     }
 
-    public static HttpResponse notFound(String path) {
-        String html = "<!DOCTYPE html><html><head><meta charset='utf-8'><title>404 Not Found</title>" +
-                "<style>body{background:#0b0e14;color:#f8fafc;font-family:sans-serif;text-align:center;padding-top:80px;}" +
-                "h1{color:#ff3b56;font-size:48px;}p{color:#94a3b8;font-size:18px;}</style></head><body>" +
-                "<h1>404 Not Found</h1><p>Tài nguyên được yêu cầu không tồn tại trên máy chủ: <code>" + path + "</code></p>" +
-                "<a href='/' style='color:#00d2e6;text-decoration:none;'>◀ Quay lại Trang chủ</a></body></html>";
-        HttpResponse res = ok(html, "text/html; charset=UTF-8");
-        return new HttpResponse(HttpStatus.NOT_FOUND, new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)),
-                html.getBytes(StandardCharsets.UTF_8).length)
-                .setHeader("Content-Type", "text/html; charset=UTF-8");
+    public static HttpResponse errorPage(HttpStatus status, String title, String message, String path) {
+        String html = "<!DOCTYPE html><html lang='vi'><head><meta charset='utf-8'>" +
+                "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                "<title>" + status.getCode() + " " + title + " - MediaHub</title>" +
+                "<style>" +
+                "body{background:#F8FAFC;color:#0F172A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:0;padding:60px 20px;display:flex;justify-content:center;align-items:center;min-height:70vh;}" +
+                ".card{background:#FFFFFF;border:1px solid #CBD5E1;border-radius:12px;padding:40px;max-width:520px;text-align:center;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);}" +
+                ".code{font-size:64px;font-weight:800;color:#DC2626;margin:0;line-height:1;}" +
+                "h2{color:#1E3A8A;margin:16px 0 8px;font-size:22px;}" +
+                "p{color:#475569;font-size:14px;line-height:1.6;margin:10px 0 20px;}" +
+                "code{background:#F1F5F9;color:#0284C7;padding:3px 8px;border-radius:4px;font-family:'Consolas',monospace;font-size:13px;}" +
+                ".btn{display:inline-block;background:#1E3A8A;color:#FFFFFF;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:600;font-size:13px;transition:0.2s;}" +
+                ".btn:hover{background:#1E40AF;}" +
+                ".footer{margin-top:24px;font-size:12px;color:#94A3B8;}" +
+                "</style></head><body>" +
+                "<div class='card'>" +
+                "<div class='code'>" + status.getCode() + "</div>" +
+                "<h2>" + title + "</h2>" +
+                "<p>" + message + (path != null ? "<br>Đường dẫn yêu cầu: <code>" + path + "</code>" : "") + "</p>" +
+                "<a href='/' class='btn'>Về Trang Chủ MediaHub</a>" +
+                "<div class='footer'>MediaHub Server / HTTP/1.1 (Java 21)</div>" +
+                "</div></body></html>";
+        byte[] bytes = html.getBytes(StandardCharsets.UTF_8);
+        return new HttpResponse(status, new ByteArrayInputStream(bytes), bytes.length)
+                .setHeader("Content-Type", "text/html; charset=UTF-8")
+                .setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     }
 
-    public static HttpResponse badRequest(String message) {
-        String text = "400 Bad Request: " + message;
-        return new HttpResponse(HttpStatus.BAD_REQUEST, new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)),
-                text.getBytes(StandardCharsets.UTF_8).length)
-                .setHeader("Content-Type", "text/plain; charset=UTF-8");
+    public static HttpResponse notFound(String path) {
+        return errorPage(HttpStatus.NOT_FOUND, "Không Tìm Thấy Tài Nguyên",
+                "Tài nguyên hoặc tệp tin bạn yêu cầu không tồn tại trên máy chủ.", path);
+    }
+
+    public static HttpResponse forbidden(String path) {
+        return errorPage(HttpStatus.FORBIDDEN, "Truy Cập Bị Từ Chối",
+                "Bạn không có quyền truy cập vào tài nguyên này trên máy chủ.", path);
     }
 
     public static HttpResponse internalError(String message) {
-        String text = "500 Internal Server Error: " + message;
-        return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)),
-                text.getBytes(StandardCharsets.UTF_8).length)
-                .setHeader("Content-Type", "text/plain; charset=UTF-8");
+        return errorPage(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi Máy Chủ Nội Bộ",
+                "Máy chủ gặp sự cố trong quá trình xử lý yêu cầu: " + message, null);
+    }
+
+    public static HttpResponse badRequest(String message) {
+        return errorPage(HttpStatus.BAD_REQUEST, "Yêu Cầu Không Hợp Lệ",
+                message, null);
     }
 }
