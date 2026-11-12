@@ -134,8 +134,8 @@ public class HttpRequest {
             }
         }
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        if (path.isEmpty() || path.equals("/")) {
-            path = "/index.html";
+        if (path.isEmpty()) {
+            path = "/";
         }
 
         // Parse headers
