@@ -18,7 +18,7 @@ public class HttpServerEngine {
     private Thread acceptorThread;
 
     private int port = 8080;
-    private File webRoot = new File("web_root");
+    private volatile File webRoot = new File("web_root");
     private final AccessLogDao logDao = new AccessLogDao();
     private ServerListener listener;
 
@@ -105,5 +105,14 @@ public class HttpServerEngine {
 
     public File getWebRoot() {
         return webRoot;
+    }
+
+    public synchronized void setWebRoot(File webRoot) {
+        if (webRoot != null) {
+            this.webRoot = webRoot;
+            if (!this.webRoot.exists()) {
+                this.webRoot.mkdirs();
+            }
+        }
     }
 }

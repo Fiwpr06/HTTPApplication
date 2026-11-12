@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.awt.Desktop;
@@ -38,14 +39,12 @@ public class ServerController implements Initializable, ServerListener {
     @FXML private TextArea txtConsoleLog;
     @FXML private Label lblSummary;
 
-    // File selection labels
-    @FXML private Label lblCurrentAudio;
-    @FXML private Label lblCurrentVideo;
-    @FXML private Label lblCurrentPdf;
+    // Document Root field
+    @FXML private TextField txtWebRoot;
 
     private final HttpServerEngine serverEngine = new HttpServerEngine();
     private final AccessLogDao logDao = new AccessLogDao();
-    private final File webRoot = new File("web_root");
+    private File webRoot = new File("web_root");
 
     private long totalRequests = 0;
     private long totalBytes = 0;
@@ -61,6 +60,7 @@ public class ServerController implements Initializable, ServerListener {
 
         localIp = NetworkUtil.getLocalIpv4Address();
         updateUrlCards("8080");
+        txtWebRoot.setText(webRoot.getAbsolutePath());
 
         // Initial stats
         totalRequests = logDao.getTotalRequests();
@@ -123,74 +123,19 @@ public class ServerController implements Initializable, ServerListener {
     }
 
     @FXML
-    public void handleSelectAudio() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Chọn tệp âm thanh MP3 từ máy tính");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Tệp âm thanh (*.mp3, *.wav)", "*.mp3", "*.wav"),
-                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
-        );
-        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
-        if (file != null) {
-            try {
-                File target = new File(webRoot, "media/audio.mp3");
-                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
-                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                target.setLastModified(System.currentTimeMillis());
-                lblCurrentAudio.setText(file.getName());
-                appendLog("[CAP NHAT TEP] Da nap thanh cong bai hat: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp bài hát: " + file.getName() + "\nTrang web sẽ tự động nhận bài hát mới ngay tức thì!");
-            } catch (Exception e) {
-                AlertHelper.showError("Lỗi", "Không thể nạp tệp âm thanh: " + e.getMessage());
-            }
+    public void handleSelectWebRoot() {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Chọn Thư Mục Web Root Phục Vụ");
+        if (webRoot.exists()) {
+            chooser.setInitialDirectory(webRoot);
         }
-    }
-
-    @FXML
-    public void handleSelectVideo() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Chọn tệp video MP4 từ máy tính");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Tệp video (*.mp4)", "*.mp4"),
-                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
-        );
-        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
-        if (file != null) {
-            try {
-                File target = new File(webRoot, "media/video.mp4");
-                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
-                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                target.setLastModified(System.currentTimeMillis());
-                lblCurrentVideo.setText(file.getName());
-                appendLog("[CAP NHAT TEP] Da nap thanh cong video: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp video: " + file.getName() + "\nTrang web sẽ tự động nhận video mới ngay tức thì!");
-            } catch (Exception e) {
-                AlertHelper.showError("Lỗi", "Không thể nạp tệp video: " + e.getMessage());
-            }
-        }
-    }
-
-    @FXML
-    public void handleSelectPdf() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Chọn tài liệu PDF từ máy tính");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Tài liệu PDF (*.pdf)", "*.pdf"),
-                new FileChooser.ExtensionFilter("Tất cả tệp", "*.*")
-        );
-        File file = chooser.showOpenDialog(txtPort.getScene().getWindow());
-        if (file != null) {
-            try {
-                File target = new File(webRoot, "documents/sample.pdf");
-                if (!target.getParentFile().exists()) target.getParentFile().mkdirs();
-                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                target.setLastModified(System.currentTimeMillis());
-                lblCurrentPdf.setText(file.getName());
-                appendLog("[CAP NHAT TEP] Da nap thanh cong tai lieu PDF: " + file.getName() + " (" + FileUtils.formatFileSize(file.length()) + ")");
-                AlertHelper.showInfo("Thành Công", "Đã nạp tài liệu PDF: " + file.getName() + "\nTrang web sẽ tự động hiển thị PDF mới ngay tức thì!");
-            } catch (Exception e) {
-                AlertHelper.showError("Lỗi", "Không thể nạp tài liệu PDF: " + e.getMessage());
-            }
+        File selectedDir = chooser.showDialog(txtPort.getScene().getWindow());
+        if (selectedDir != null && selectedDir.isDirectory()) {
+            this.webRoot = selectedDir;
+            serverEngine.setWebRoot(selectedDir);
+            txtWebRoot.setText(selectedDir.getAbsolutePath());
+            appendLog("[CAU HINH] Da chuyen thu muc Web Root sang: " + selectedDir.getAbsolutePath());
+            AlertHelper.showInfo("Cập Nhật Thành Công", "Đã chuyển thư mục Web Root sang:\n" + selectedDir.getAbsolutePath());
         }
     }
 

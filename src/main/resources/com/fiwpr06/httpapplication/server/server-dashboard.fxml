@@ -59,26 +59,15 @@
 
                     <Region HBox.hgrow="ALWAYS"/>
 
-                    <Button text="Mở Thư Mục Web" onAction="#handleBrowseWebRoot" styleClass="btn-secondary"/>
                     <Button text="Xóa Nhật Ký" onAction="#handleClearScreen" styleClass="btn-secondary"/>
                 </HBox>
 
-                <!-- File Picker Toolbar -->
+                <!-- Dynamic Document Root Selector -->
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="file-picker-bar">
-                    <Label text="Tự chọn file phát:" style="-fx-text-fill: #1E3A8A; -fx-font-size: 12px; -fx-font-weight: bold;"/>
-
-                    <Button text="[+] Chọn Nhạc MP3" onAction="#handleSelectAudio" styleClass="btn-file-picker"/>
-                    <Label fx:id="lblCurrentAudio" text="audio.mp3" maxWidth="150" style="-fx-text-fill: #0284C7; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
-
-                    <Separator orientation="VERTICAL" prefHeight="16"/>
-
-                    <Button text="[+] Chọn Video MP4" onAction="#handleSelectVideo" styleClass="btn-file-picker"/>
-                    <Label fx:id="lblCurrentVideo" text="video.mp4" maxWidth="150" style="-fx-text-fill: #059669; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
-
-                    <Separator orientation="VERTICAL" prefHeight="16"/>
-
-                    <Button text="[+] Chọn PDF" onAction="#handleSelectPdf" styleClass="btn-file-picker"/>
-                    <Label fx:id="lblCurrentPdf" text="sample.pdf" maxWidth="150" style="-fx-text-fill: #D97706; -fx-font-size: 11px; -fx-font-family: 'Consolas', monospace; -fx-font-weight: bold;"/>
+                    <Label text="Thư mục Web Root:" style="-fx-text-fill: #1E3A8A; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                    <TextField fx:id="txtWebRoot" editable="false" HBox.hgrow="ALWAYS" promptText="Đường dẫn thư mục phục vụ..." styleClass="port-input" style="-fx-pref-width: 380px; -fx-font-family: 'Consolas', monospace; -fx-font-size: 12px;"/>
+                    <Button text="[+] Chọn Thư Mục..." onAction="#handleSelectWebRoot" styleClass="btn-file-picker"/>
+                    <Button text="Mở Thư Mục" onAction="#handleBrowseWebRoot" styleClass="btn-secondary"/>
                 </HBox>
             </VBox>
         </VBox>
